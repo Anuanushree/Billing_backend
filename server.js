@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const config = require("./utilis/config");
-const app = require("./app");
+const app = require("./App");
 
 mongoose
   .connect(config.MONGO_URL)

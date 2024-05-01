@@ -26,6 +26,7 @@ const inwardSchema = new mongoose.Schema({
   updated: {
     type: Date,
   },
+  invoice: String,
 });
 
 const Inward = mongoose.model("Inward", inwardSchema, "inward");

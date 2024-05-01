@@ -112,6 +112,7 @@ const Formcontroller = {
         Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
         Total_value: totalValue,
         updatedAt: Date.now(),
+        invoice: data.invoice,
       });
       await searchId.save();
       const findFormId = await FormData.findByIdAndUpdate(formUpdate._id, {

@@ -10,11 +10,11 @@ const { parse } = require("dotenv");
 const Formcontroller = {
   Create: async (request, response) => {
     try {
-      const { formData } = request.body;
+      const formData = request.body;
       // const userId = request.userId;
       // const user = await User.findById(userId);
       var Quantity = 0;
-
+      console.log(formData);
       if (formData.Size == 650 || formData.Size == 750) {
         Quantity = 12;
       } else if (
@@ -175,7 +175,7 @@ const Formcontroller = {
       const userId = request.userId;
       // const copydata = await FormData.findById(Data.id);
 
-      formDetails.map((d) => {
+      formDetails.map(async (d) => {
         const newdata = new DailyData({
           Range: d.Range,
           Product: d.Product,
@@ -199,34 +199,8 @@ const Formcontroller = {
           Closing_value: d.Closing_value,
           updatedAt: Date.now(),
         });
-        newdata.save();
+        await newdata.save();
       });
-
-      const productWiseSales = formDetails.reduce((acc, item) => {
-        const { Product, Closing_value } = item;
-        if (!acc[Product]) {
-          acc[Product] = 0;
-        }
-        acc[Product] += Closing_value;
-        return acc;
-      }, {});
-
-      Object.entries(productWiseSales).map((d) => {
-        const CategoryTotal = new Sale({
-          Product: d[0],
-          Closing_value: d[1],
-          date: Date.now(),
-        });
-        CategoryTotal.save();
-      });
-
-      // for (let i = 0; i < formDetails.length; i++) {
-      //   formDetails[i].Opening_bottle =
-      //     parseInt(formDetails[i].Total_bottle) -
-      //     parseInt(formDetails[i].Sales_bottle);
-      //   console.log(formDetails[i].Opening_bottle);
-      // }
-      // console.log(formDetails);
 
       formDetails.map(async (d) => {
         const find = await FormData.findById(d._id);

@@ -106,8 +106,10 @@ const Formcontroller = {
         Description: data.desciption,
         Receipt_bottle: parseInt(data.ReceiptBottle),
         Opening_bottle: parseInt(data.OpeningBottle),
-        Case: parseInt(data.editedCaseValue),
-        Loose: parseInt(data.editedLooseValue),
+        // Case: parseInt(data.editedCaseValue),
+        // Loose: parseInt(data.editedLooseValue),
+        Case: data.editedCaseValue > 0 ? data.editedCaseValue : null,
+        Loose: data.editedLooseValue > 0 ? data.editedLooseValue : null,
         Receipt_value: parseInt(data.editMRP) * parseInt(data.ReceiptBottle),
         Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
         Total_value: totalValue,
@@ -153,8 +155,8 @@ const Formcontroller = {
       var ClosingValue = parseInt(Getdata.Total_value) - parseInt(salesvalues);
       // var openingbottle = totalBottle - salesBottle;
       const searchId = await FormData.findByIdAndUpdate(Data.id, {
-        Case: Data.editedCaseValue,
-        Loose: Data.editedLooseValue,
+        Case: Data.editedCaseValue > 0 ? Data.editedCaseValue : null,
+        Loose: Data.editedLooseValue > 0 ? Data.editedLooseValue : null,
         Total_bottle: totalBottle,
         Closing_bottle: closingBottle,
         Sale_value: salesvalues,

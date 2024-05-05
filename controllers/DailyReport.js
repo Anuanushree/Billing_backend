@@ -4,12 +4,13 @@ const Sale = require("../model/sale");
 const ReportControllers = {
   saveReport: async (request, response) => {
     try {
-      const { Pos, Cash, Sale, date, Bank } = request.body;
+      const { Pos, Cash, Sale, Bank, Paytm } = request.body;
       const newData = new DailyReport({
         Pos,
         Cash,
         Sale,
         Bank,
+        Paytm,
       });
       await newData.save();
       response.status(200).json({ message: "Report  added successfully" });

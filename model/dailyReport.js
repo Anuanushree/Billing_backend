@@ -6,6 +6,7 @@ const dailyReportSchema = new mongoose.Schema({
   Sale: Number,
   Bank: Number,
   Date: { type: Date, default: Date.now() },
+  Paytm: String,
 });
 
 const DailyReport = mongoose.model(

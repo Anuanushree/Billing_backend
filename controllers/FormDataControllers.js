@@ -96,20 +96,18 @@ const Formcontroller = {
     try {
       const data = request.body;
       console.log(data.OpeningBottle);
-      const Getdata = await Inward.findById(data.id);
-      const formUpdate = await FormData.findOne({ Item_Code: data.itemCode });
-      console.log(formUpdate);
+      // const Getdata = await Inward.findById(data.id);
+      // const formUpdate = await FormData.findOne({ Item_Code: data.itemCode });
+      // console.log(formUpdate);
       var totalValue =
         parseInt(data.editMRP) * parseInt(data.OpeningBottle) +
         parseInt(data.editMRP) * parseInt(data.ReceiptBottle);
-      const searchId = await Inward.findByIdAndUpdate(data.id, {
+      const searchId = await FormData.findByIdAndUpdate(data.id, {
         Description: data.desciption,
         Receipt_bottle: parseInt(data.ReceiptBottle),
         Opening_bottle: parseInt(data.OpeningBottle),
-        // Case: parseInt(data.editedCaseValue),
-        // Loose: parseInt(data.editedLooseValue),
-        Case: data.editedCaseValue > 0 ? data.editedCaseValue : null,
-        Loose: data.editedLooseValue > 0 ? data.editedLooseValue : null,
+        Case: null,
+        Loose: null,
         Receipt_value: parseInt(data.editMRP) * parseInt(data.ReceiptBottle),
         Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
         Total_value: totalValue,
@@ -117,18 +115,21 @@ const Formcontroller = {
         invoice: data.invoice,
       });
       await searchId.save();
-      const findFormId = await FormData.findByIdAndUpdate(formUpdate._id, {
-        Description: data.desciption,
-        Receipt_bottle: parseInt(data.ReceiptBottle),
-        Opening_bottle: parseInt(data.OpeningBottle),
-        Case: parseInt(data.editedCaseValue),
-        Loose: parseInt(data.editedLooseValue),
-        Receipt_value: parseInt(data.editMRP) * parseInt(data.ReceiptBottle),
-        Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
-        Total_value: totalValue,
-        updatedAt: Date.now(),
-      });
-      await findFormId.save();
+      const chkinvoice = await User.findOne({ invoice });
+      if (!chkinvoice) {
+      }
+      // const findFormId = await FormData.findByIdAndUpdate(formUpdate._id, {
+      //   Description: data.desciption,
+      //   Receipt_bottle: parseInt(data.ReceiptBottle),
+      //   Opening_bottle: parseInt(data.OpeningBottle),
+      //   Case: null,
+      //   Loose: null,
+      //   Receipt_value: parseInt(data.editMRP) * parseInt(data.ReceiptBottle),
+      //   Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
+      //   Total_value: totalValue,
+      //   updatedAt: Date.now(),
+      // });
+      // await findFormId.save();
       response.json({ message: "case updated successfully" });
     } catch (error) {
       response.json({ message: "Error in updating case backend " });
@@ -143,7 +144,7 @@ const Formcontroller = {
       const Getdata = await FormData.findById(Data.id);
       // console.log(Getdata);
       var cs = parseInt(Data.editedCaseValue) * parseInt(Getdata.Quantity);
-      console.log(cs, "cs");
+
       var closingBottle = cs + parseInt(Data.editedLooseValue);
       // console.log(closingBottle);
       var totalBottle =
@@ -155,8 +156,8 @@ const Formcontroller = {
       var ClosingValue = parseInt(Getdata.Total_value) - parseInt(salesvalues);
       // var openingbottle = totalBottle - salesBottle;
       const searchId = await FormData.findByIdAndUpdate(Data.id, {
-        Case: Data.editedCaseValue > 0 ? Data.editedCaseValue : null,
-        Loose: Data.editedLooseValue > 0 ? Data.editedLooseValue : null,
+        Case: Data.editedCaseValue,
+        Loose: Data.editedLooseValue,
         Total_bottle: totalBottle,
         Closing_bottle: closingBottle,
         Sale_value: salesvalues,

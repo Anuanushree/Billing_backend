@@ -30,6 +30,7 @@ const formDataSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  invoice: String,
 });
 
 const FormData = mongoose.model("FormData", formDataSchema, "formData");

@@ -107,6 +107,8 @@ const Formcontroller = {
         Receipt_bottle: parseInt(data.ReceiptBottle),
         Opening_bottle: parseInt(data.OpeningBottle),
         Case: null,
+        Total_bottle:
+          parseInt(data.ReceiptBottle) + parseInt(data.OpeningBottle),
         Loose: null,
         Receipt_value: parseInt(data.editMRP) * parseInt(data.ReceiptBottle),
         Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
@@ -207,43 +209,45 @@ const Formcontroller = {
       });
 
       formDetails.map(async (d) => {
-        const find = await FormData.findById(d._id);
-        if (find.Sales_bottle) {
+        // const find = await FormData.findById(d._id);
+        if (d.Closing_bottle) {
           var totalValue =
-            find.MRP_Value * find.Opening_bottle +
-            find.MRP_Value * find.Receipt_bottle;
-          var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
-          console.log(openingbottle);
+            d.MRP_Value * d.Closing_bottle + d.MRP_Value;
+          // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
+          // console.log(openingbottle);
+
           var newform = await FormData.findByIdAndUpdate(d._id, {
-            Opening_bottle: openingbottle,
-            Opening_value: find.MRP_Value * find.Opening_bottle,
-            Receipt_value: find.MRP_Value * find.Receipt_bottle,
+            Opening_bottle: d.Closing_bottle,
+            Opening_value: d.MRP_Value * d.Opening_bottle,
+            Receipt_value: d.MRP_Value * d.Receipt_bottle,
             Total_value: totalValue,
             updatedAt: Date.now(),
             Total_bottle: null,
+            Receipt_bottle: null,
             Closing_bottle: null,
             Sales_bottle: null,
             Sale_value: null,
             Closing_value: null,
             Case: null,
             Loose: null,
+            Total_bottle: d.Closing_bottle,
           });
           await newform.save();
-        } else {
-          var newform = await FormData.findByIdAndUpdate(d._id, {
-            Opening_bottle: find.Opening_bottle,
-            Opening_value: find.MRP_Value * find.Opening_bottle,
-            Receipt_value: find.MRP_Value * find.Receipt_bottle,
-            Total_value: find.Total_value,
-            updatedAt: Date.now(),
-            Total_bottle: null,
-            Closing_bottle: null,
-            Sales_bottle: null,
-            Sale_value: null,
-            Closing_value: null,
-            Case: null,
-            Loose: null,
-          });
+          // } else {
+          //   var newform = await FormData.findByIdAndUpdate(d._id, {
+          //     Opening_bottle: find.Opening_bottle,
+          //     Opening_value: find.MRP_Value * find.Opening_bottle,
+          //     Receipt_value: find.MRP_Value * find.Receipt_bottle,
+          //     Total_value: find.Total_value,
+          //     updatedAt: Date.now(),
+          //     Total_bottle: null,
+          //     Closing_bottle: null,
+          //     Sales_bottle: null,
+          //     Sale_value: null,
+          //     Closing_value: null,
+          //     Case: null,
+          //     Loose: null,
+          //   });
         }
       });
 

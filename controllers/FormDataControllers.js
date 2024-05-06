@@ -210,9 +210,8 @@ const Formcontroller = {
 
       formDetails.map(async (d) => {
         // const find = await FormData.findById(d._id);
-        if (d.Closing_bottle) {
-          var totalValue =
-            d.MRP_Value * d.Closing_bottle + d.MRP_Value;
+        if (d.Closing_bottle || d.Sale_value > 0) {
+          var totalValue = d.MRP_Value * d.Closing_bottle + d.MRP_Value;
           // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
           // console.log(openingbottle);
 

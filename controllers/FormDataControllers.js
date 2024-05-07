@@ -217,8 +217,8 @@ const Formcontroller = {
 
           var newform = await FormData.findByIdAndUpdate(d._id, {
             Opening_bottle: d.Closing_bottle,
-            Opening_value: d.MRP_Value * d.Opening_bottle,
-            Receipt_value: d.MRP_Value * d.Receipt_bottle,
+            Opening_value: d.MRP_Value * d.Closing_bottle,
+            Receipt_value: null,
             Total_value: totalValue,
             updatedAt: Date.now(),
             Total_bottle: null,

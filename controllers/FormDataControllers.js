@@ -149,8 +149,7 @@ const Formcontroller = {
 
       var closingBottle = cs + parseInt(Data.editedLooseValue);
       // console.log(closingBottle);
-      var totalBottle =
-        parseInt(Getdata.Opening_bottle) + parseInt(Getdata.Receipt_bottle);
+      var totalBottle = Getdata.Opening_bottle + Getdata.Receipt_bottle;
       // console.log(totalBottle);
       var salesBottle = parseInt(totalBottle) - parseInt(closingBottle);
       // console.log(salesBottle,"rtyui")
@@ -210,7 +209,7 @@ const Formcontroller = {
 
       formDetails.map(async (d) => {
         // const find = await FormData.findById(d._id);
-        if (d.Closing_bottle || d.Sale_value > 0) {
+
           var totalValue = d.MRP_Value * d.Closing_bottle + d.MRP_Value;
           // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
           // console.log(openingbottle);
@@ -247,7 +246,7 @@ const Formcontroller = {
           //     Case: null,
           //     Loose: null,
           //   });
-        }
+        
       });
 
       response.json({ message: "daily data  successfully" });

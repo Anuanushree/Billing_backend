@@ -189,13 +189,13 @@ const Formcontroller = {
           Size: d.Size,
           MRP_Value: d.MRP_Value,
           Opening_bottle: d.Opening_bottle,
-          Receipt_bottle: d.Receipt_bottle,
+          Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
           Case: d.Case,
           Loose: d.Loose,
           Item_type: d.Item_type,
           Quantity: d.Quantity,
           Opening_value: d.Opening_value,
-          Receipt_value: d.Receipt_value,
+          Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
           Total_value: d.Total_value,
           Total_bottle: d.Total_bottle,
           Closing_bottle: d.Closing_bottle,
@@ -210,43 +210,42 @@ const Formcontroller = {
       formDetails.map(async (d) => {
         // const find = await FormData.findById(d._id);
 
-          var totalValue = d.MRP_Value * d.Closing_bottle + d.MRP_Value;
-          // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
-          // console.log(openingbottle);
+        var totalValue = d.MRP_Value * d.Closing_bottle + d.MRP_Value;
+        // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
+        // console.log(openingbottle);
 
-          var newform = await FormData.findByIdAndUpdate(d._id, {
-            Opening_bottle: d.Closing_bottle,
-            Opening_value: d.MRP_Value * d.Closing_bottle,
-            Receipt_value: null,
-            Total_value: totalValue,
-            updatedAt: Date.now(),
-            Total_bottle: null,
-            Receipt_bottle: null,
-            Closing_bottle: null,
-            Sales_bottle: null,
-            Sale_value: null,
-            Closing_value: null,
-            Case: null,
-            Loose: null,
-            Total_bottle: d.Closing_bottle,
-          });
-          await newform.save();
-          // } else {
-          //   var newform = await FormData.findByIdAndUpdate(d._id, {
-          //     Opening_bottle: find.Opening_bottle,
-          //     Opening_value: find.MRP_Value * find.Opening_bottle,
-          //     Receipt_value: find.MRP_Value * find.Receipt_bottle,
-          //     Total_value: find.Total_value,
-          //     updatedAt: Date.now(),
-          //     Total_bottle: null,
-          //     Closing_bottle: null,
-          //     Sales_bottle: null,
-          //     Sale_value: null,
-          //     Closing_value: null,
-          //     Case: null,
-          //     Loose: null,
-          //   });
-        
+        var newform = await FormData.findByIdAndUpdate(d._id, {
+          Opening_bottle: d.Closing_bottle,
+          Opening_value: d.MRP_Value * d.Closing_bottle,
+          Receipt_value: null,
+          Total_value: totalValue,
+          updatedAt: Date.now(),
+          Total_bottle: null,
+          Receipt_bottle: null,
+          Closing_bottle: null,
+          Sales_bottle: null,
+          Sale_value: null,
+          Closing_value: null,
+          Case: null,
+          Loose: null,
+          Total_bottle: d.Closing_bottle,
+        });
+        await newform.save();
+        // } else {
+        //   var newform = await FormData.findByIdAndUpdate(d._id, {
+        //     Opening_bottle: find.Opening_bottle,
+        //     Opening_value: find.MRP_Value * find.Opening_bottle,
+        //     Receipt_value: find.MRP_Value * find.Receipt_bottle,
+        //     Total_value: find.Total_value,
+        //     updatedAt: Date.now(),
+        //     Total_bottle: null,
+        //     Closing_bottle: null,
+        //     Sales_bottle: null,
+        //     Sale_value: null,
+        //     Closing_value: null,
+        //     Case: null,
+        //     Loose: null,
+        //   });
       });
 
       response.json({ message: "daily data  successfully" });

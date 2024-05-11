@@ -6,6 +6,7 @@ const Inward = require("../model/Invade");
 const DailyData = require("../model/dailydata");
 const Sale = require("../model/sale");
 const { parse } = require("dotenv");
+const InvoiceNum = require("../model/invoiceNum");
 
 const Formcontroller = {
   Create: async (request, response) => {
@@ -114,12 +115,12 @@ const Formcontroller = {
         Opening_value: parseInt(data.editMRP) * parseInt(data.OpeningBottle),
         Total_value: totalValue,
         updatedAt: Date.now(),
-        invoice: data.invoice,
+        // invoice: data.invoice,
       });
       await searchId.save();
-      const chkinvoice = await User.findOne({ invoice });
-      if (!chkinvoice) {
-      }
+      // const chkinvoice = await User.findOne({ invoice });
+      // if (!chkinvoice) {
+      // }
       // const findFormId = await FormData.findByIdAndUpdate(formUpdate._id, {
       //   Description: data.desciption,
       //   Receipt_bottle: parseInt(data.ReceiptBottle),
@@ -139,6 +140,63 @@ const Formcontroller = {
     }
   },
 
+  invoice: async (request, response) => {
+    try {
+      const data = request.body;
+
+      const totalValue = data.formDetails.reduce((total, item) => {
+        return total + parseInt(item.Total_value);
+      }, 0);
+
+      const OpeningValue = data.formDetails.reduce((total, item) => {
+        return total + parseInt(item.Opening_value);
+      }, 0);
+
+      const ReceiptValue = data.formDetails.reduce((total, item) => {
+        return total + item.Receipt_value;
+      }, 0);
+
+      const openingBottle = data.formDetails.reduce((total, item) => {
+        return total + item.Opening_bottle;
+      }, 0);
+
+      const receiptBottle = data.formDetails.reduce((total, item) => {
+        return total + item.Receipt_bottle;
+      }, 0);
+
+      console.log(openingBottle);
+
+      console.log(receiptBottle);
+
+      console.log(OpeningValue);
+      console.log(ReceiptValue);
+      console.log(totalValue);
+      const overallTotalBottle = data.formDetails.reduce((total, d) => {
+        return total + d.Total_bottle;
+      }, 0);
+      console.log(overallTotalBottle);
+      console.log(data.invoice);
+      const newData = new InvoiceNum({
+        OpeningBottle: openingBottle,
+        OpeningValue: OpeningValue,
+        ReceiptBottle: receiptBottle,
+        ReceiptValue: ReceiptValue,
+        TotalBottle: overallTotalBottle,
+        TotalValue: totalValue,
+
+        Invoice: data.invoice,
+      });
+
+      await newData.save();
+
+      response
+        .status(200)
+        .json({ message: "data saved successfully", newData });
+    } catch (error) {
+      console.log("error in save invoice data :", error);
+      response.send(error);
+    }
+  },
   updateData: async (request, response) => {
     try {
       const Data = request.body;
@@ -190,18 +248,24 @@ const Formcontroller = {
           MRP_Value: d.MRP_Value,
           Opening_bottle: d.Opening_bottle,
           Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
-          Case: d.Case,
-          Loose: d.Loose,
+
+          // console.log(closingBottle);
+
+          Case: d.Case == null ? 0 : d.Case,
+          Loose: d.Loose == null ? 0 : d.Loose,
           Item_type: d.Item_type,
           Quantity: d.Quantity,
           Opening_value: d.Opening_value,
           Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
-          Total_value: d.Total_value,
-          Total_bottle: d.Total_bottle,
-          Closing_bottle: d.Closing_bottle,
-          Sales_bottle: d.Sales_bottle,
-          Sale_value: d.Sale_value,
-          Closing_value: d.Closing_value,
+          Total_value: d.Total_value == null ? 0 : d.Total_value,
+          Total_bottle:
+            d.Total_bottle == null
+              ? d.Opening_bottle + d.Receipt_bottle
+              : d.Total_bottle,
+          Closing_bottle: d.Closing_bottle == null ? 0 : d.Closing_bottle,
+          Sales_bottle: d.Sales_bottle == null ? 0 : d.Sales_bottle,
+          Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
+          Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
           updatedAt: Date.now(),
         });
         await newdata.save();
@@ -210,13 +274,20 @@ const Formcontroller = {
       formDetails.map(async (d) => {
         // const find = await FormData.findById(d._id);
 
-        var totalValue = d.MRP_Value * d.Closing_bottle;
+        var totalValue =
+          d.Closing_bottle == null
+            ? d.MRP_Value * d.Total_bottle
+            : d.MRP_Value * d.Closing_bottle;
         // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
         // console.log(openingbottle);
 
         var newform = await FormData.findByIdAndUpdate(d._id, {
-          Opening_bottle: d.Closing_bottle,
-          Opening_value: d.MRP_Value * d.Closing_bottle,
+          Opening_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+          Opening_value:
+            d.Closing_bottle == null
+              ? d.MRP_Value * d.Total_bottle
+              : d.MRP_Value * d.Closing_bottle,
           Receipt_value: null,
           Total_value: totalValue,
           updatedAt: Date.now(),
@@ -228,7 +299,8 @@ const Formcontroller = {
           Closing_value: null,
           Case: null,
           Loose: null,
-          Total_bottle: d.Closing_bottle,
+          Total_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
         });
         await newform.save();
         // } else {
@@ -301,6 +373,15 @@ const Formcontroller = {
   getdailyData: async (request, response) => {
     try {
       const data = await DailyData.find({}, {});
+      response.send(data);
+    } catch (error) {
+      response.json({ message: "Error in getting list " });
+      console.log("Error in getting list :", error);
+    }
+  },
+  getinvoice: async (request, response) => {
+    try {
+      const data = await InvoiceNum.find({}, {});
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });

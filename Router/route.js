@@ -14,12 +14,14 @@ userRouter.post("/create", Formcontroller.Create);
 userRouter.get("/getData", Formcontroller.getdata);
 userRouter.get("/getdailyData", Formcontroller.getdailyData);
 userRouter.get("/getItemMaster", Formcontroller.getItemMaster);
+userRouter.get("/getinvoice", Formcontroller.getinvoice);
 userRouter.put("/updateReceipt", Formcontroller.itemUpdate);
 
 userRouter.put("/openingUpdate", Formcontroller.openingUpdate);
 userRouter.put("/updateData", Formcontroller.updateData);
 userRouter.post("/search", Formcontroller.search);
 userRouter.post("/dailyData", Formcontroller.dd);
+userRouter.post("/invoice", Formcontroller.invoice);
 userRouter.get("/getSale", ReportControllers.getSaleData);
 userRouter.get("/bank", ReportControllers.get);
 userRouter.post(

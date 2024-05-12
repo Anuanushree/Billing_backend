@@ -171,12 +171,11 @@ const Formcontroller = {
       console.log(OpeningValue);
       console.log(ReceiptValue);
       console.log(totalValue);
-      const overallTotalBottle = useMemo(() => {
-        return formDetails.reduce((total, detail) => {
-          // ParseInt will return NaN for null values, so we handle them with || 0
-          return total + (parseInt(detail.Total_bottle) || 0);
-        }, 0);
-      }, [formDetails]);
+      const overallTotalBottle = data.formDetails.reduce((total, detail) => {
+        // ParseInt will return NaN for null values, so we handle them with || 0
+        return total + (parseInt(detail.Total_bottle) || 0);
+      }, 0);
+
       console.log(overallTotalBottle);
       console.log(data.invoice);
       const newData = new InvoiceNum({

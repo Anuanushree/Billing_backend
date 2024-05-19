@@ -4,21 +4,7 @@ const Sale = require("../model/sale");
 
 const ReportControllers = {
   saveReport: async (request, response) => {
-    // try {
-    //   const { Pos, Cash, Sale, Bank, Paytm } = request.body;
-    //   const newData = new DailyReport({
-    //     Pos,
-    //     Cash,
-    //     Sale,
-    //     Bank,
-    //     Paytm,
-    //   });
-    //   await newData.save();
-    //   response.status(200).json({ message: "Report  added successfully" });
-    // } catch (error) {
-    //   console.log("Error in DailyReport ", error);
-    //   response.json({ message: "Error in DailyReport" });
-    // }
+   
     try {
       const { Pos, Cash, Sale, Bank, Paytm } = request.body; // Assuming DateTime is included in the request body
       const dateObject = new Date();

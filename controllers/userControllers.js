@@ -28,7 +28,7 @@ const usercontroller = {
     }
   },
   signin: async (request, response) => {
-    try {
+    try {u
       const { email, password } = request.body;
       const user = await User.findOne({ email });
       const udt = await User.findByIdAndUpdate(user._id, { Able: "true" });

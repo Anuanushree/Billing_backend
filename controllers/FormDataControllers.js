@@ -143,49 +143,70 @@ const Formcontroller = {
   invoice: async (request, response) => {
     try {
       const data = request.body;
+      const itemTypeWiseTotal = {};
+      data.formDetails.forEach((entry) => {
+        const { Item_type, Size, Total_bottle } = entry;
+        if (!itemTypeWiseTotal[Item_type]) {
+          itemTypeWiseTotal[Item_type] = {};
+        }
+        if (!itemTypeWiseTotal[Item_type][Size]) {
+          itemTypeWiseTotal[Item_type][Size] = 0;
+        }
+        itemTypeWiseTotal[Item_type][Size] += Total_bottle;
+      });
 
-      const totalValue = data.formDetails.reduce((total, item) => {
-        return total + parseInt(item.Total_value);
-      }, 0);
+      // Log the result
+      console.log("Item Type Wise Total:", itemTypeWiseTotal);
+      let totalBeerQuantity = 0;
+      let totalIFSCQuantity = 0;
+      let totalBeerbottle = 0;
+      let totalBeerprice = 0;
+      let totalIMFsbottle = 0;
+      let totalIMFsprice = 0;
+      data.formDetails.forEach((item) => {
+        // Check the type of sale (beer or IFSC) and update the corresponding total quantity
+        if (item.Item_type === "Beer_sale") {
+          totalBeerbottle += item.Total_bottle;
+          totalBeerprice += item.Total_value;
+        } else if (item.Item_type === "IMFS_sale") {
+          totalIMFsbottle += item.Total_bottle;
+          totalIMFsprice += item.Total_value;
+        }
+      });
 
-      const OpeningValue = data.formDetails.reduce((total, item) => {
-        return total + parseInt(item.Opening_value);
-      }, 0);
+      data.formDetails.forEach((item) => {
+        // Check the type of sale (beer or IFSC) and update the corresponding total quantity
+        if (item.Item_type === "Beer_sale") {
+          totalBeerQuantity += item.Quantity;
+        } else if (item.Item_type === "IMFS_sale") {
+          totalIFSCQuantity += item.Quantity;
+        }
+      });
 
-      const ReceiptValue = data.formDetails.reduce((total, item) => {
-        return total + item.Receipt_value;
-      }, 0);
-
-      const openingBottle = data.formDetails.reduce((total, item) => {
-        return total + item.Opening_bottle;
-      }, 0);
-
-      const receiptBottle = data.formDetails.reduce((total, item) => {
-        return total + item.Receipt_bottle;
-      }, 0);
-
-      console.log(openingBottle);
-
-      console.log(receiptBottle);
-
-      console.log(OpeningValue);
-      console.log(ReceiptValue);
-      console.log(totalValue);
-      const overallTotalBottle = data.formDetails.reduce((total, detail) => {
-        // ParseInt will return NaN for null values, so we handle them with || 0
-        return total + (parseInt(detail.Total_bottle) || 0);
-      }, 0);
-
-      console.log(overallTotalBottle);
-      console.log(data.invoice);
+      console.log(
+        "Total quantity for beer sales:",
+        totalBeerQuantity,
+        totalBeerbottle,
+        totalBeerprice
+      );
+      console.log(
+        "Total quantity for IFSC sales:",
+        totalIFSCQuantity,
+        totalIMFsbottle,
+        totalIMFsprice
+      );
       const newData = new InvoiceNum({
-        OpeningBottle: openingBottle,
-        OpeningValue: OpeningValue,
-        ReceiptBottle: receiptBottle,
-        ReceiptValue: ReceiptValue,
-        TotalBottle: overallTotalBottle,
-        TotalValue: totalValue,
-
+        Beer_size: itemTypeWiseTotal.Beer_sale,
+        IMFS_sie: itemTypeWiseTotal.IMFS_sale,
+        Beer_Case: totalBeerQuantity,
+        IMFS_case: totalIFSCQuantity,
+        Beer_total_bottle: totalBeerbottle,
+        Beer_total_value: totalBeerprice,
+        IMFS_total_bottle: totalIMFsbottle,
+        IMFS_total_value: totalIMFsprice,
+        Total_Case: totalBeerQuantity + totalIFSCQuantity,
+        Total_Bottle: totalBeerbottle + totalIMFsbottle,
+        Total_amount: totalBeerprice + totalIMFsprice,
         Invoice: data.invoice,
       });
 

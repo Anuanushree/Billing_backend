@@ -11,7 +11,7 @@ const InvoiceNum = require("../model/invoiceNum");
 const Formcontroller = {
   Create: async (request, response) => {
     try {
-      const formData = request.body;
+      const { formData } = request.body;
       // const userId = request.userId;
       // const user = await User.findById(userId);
       var Quantity = 0;

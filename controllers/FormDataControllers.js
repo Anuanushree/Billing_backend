@@ -140,12 +140,122 @@ const Formcontroller = {
     }
   },
 
+  // invoice: async (request, response) => {
+  //   try {
+  //     const data = request.body;
+  //     const itemTypeWiseTotal = {};
+  //     data.formDetails.forEach((entry) => {
+  //       const { Item_type, Size, Total_bottle } = entry;
+  //       if (!itemTypeWiseTotal[Item_type]) {
+  //         itemTypeWiseTotal[Item_type] = {};
+  //       }
+  //       if (!itemTypeWiseTotal[Item_type][Size]) {
+  //         itemTypeWiseTotal[Item_type][Size] = 0;
+  //       }
+  //       itemTypeWiseTotal[Item_type][Size] += Total_bottle;
+  //     });
+
+  //     // Log the result
+  //     console.log("Item Type Wise Total:", itemTypeWiseTotal);
+  //     let totalBeerQuantity = 0;
+  //     let totalIFSCQuantity = 0;
+  //     let totalBeerbottle = 0;
+  //     let totalBeerprice = 0;
+  //     let totalIMFsbottle = 0;
+  //     let totalIMFsprice = 0;
+  //     data.formDetails.forEach((item) => {
+  //       // Check the type of sale (beer or IFSC) and update the corresponding total quantity
+  //       if (item.Item_type === "Beer_sale") {
+  //         totalBeerbottle += item.Total_bottle;
+  //         totalBeerprice += item.Total_value;
+  //       } else if (item.Item_type === "IMFS_sale") {
+  //         totalIMFsbottle += item.Total_bottle;
+  //         totalIMFsprice += item.Total_value;
+  //       }
+  //     });
+
+  //     data.formDetails.forEach((item) => {
+  //       // Check the type of sale (beer or IFSC) and update the corresponding total quantity
+  //       if (item.Item_type === "Beer_sale") {
+  //         totalBeerQuantity += item.Quantity;
+  //       } else if (item.Item_type === "IMFS_sale") {
+  //         totalIFSCQuantity += item.Quantity;
+  //       }
+  //     });
+
+  //     console.log(
+  //       "Total quantity for beer sales:",
+  //       totalBeerQuantity,
+  //       totalBeerbottle,
+  //       totalBeerprice
+  //     );
+  //     console.log(
+  //       "Total quantity for IFSC sales:",
+  //       totalIFSCQuantity,
+  //       totalIMFsbottle,
+  //       totalIMFsprice
+  //     );
+  //     const dateObject = new Date();
+
+  //     // Extracting date components
+  //     const year = dateObject.getFullYear();
+  //     const month = dateObject.getMonth() + 1; // Month is zero-indexed, so we add 1
+  //     const day = dateObject.getDate();
+
+  //     // Creating a date string in the format "YYYY-MM-DD"
+  //     const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
+  //       .toString()
+  //       .padStart(2, "0")}`;
+
+  //     let existingReport = await DailyReport.findOne({ Date: dateString }); // Checking if a report with the same date exists
+  //     if (existingReport) {
+  //       (existingReport.Beer_size = itemTypeWiseTotal.Beer_sale),
+  //         (existingReport.IMFS_sie = itemTypeWiseTotal.IMFS_sale),
+  //         (existingReport.Beer_Case = totalBeerQuantity),
+  //         (existingReport.IMFS_case = totalIFSCQuantity),
+  //         (existingReport.Beer_total_bottle = totalBeerbottle),
+  //         (existingReport.Beer_total_value = totalBeerprice),
+  //         (existingReport.IMFS_total_bottle = totalIMFsbottle),
+  //         (existingReport.IMFS_total_value = totalIMFsprice),
+  //         (existingReport.Total_Case = totalBeerQuantity + totalIFSCQuantity),
+  //         (existingReport.Total_Bottle = totalBeerbottle + totalIMFsbottle),
+  //         (existingReport.Total_amount = totalBeerprice + totalIMFsprice),
+  //         (existingReport.Invoice = data.invoice),
+  //         await existingReport.save();
+  //       response.status(200).json({ message: "Report updated successfully" });
+  //     } else {
+  //       const newData = new InvoiceNum({
+  //         Beer_size: itemTypeWiseTotal.Beer_sale,
+  //         IMFS_sie: itemTypeWiseTotal.IMFS_sale,
+  //         Beer_Case: totalBeerQuantity,
+  //         IMFS_case: totalIFSCQuantity,
+  //         Beer_total_bottle: totalBeerbottle,
+  //         Beer_total_value: totalBeerprice,
+  //         IMFS_total_bottle: totalIMFsbottle,
+  //         IMFS_total_value: totalIMFsprice,
+  //         Total_Case: totalBeerQuantity + totalIFSCQuantity,
+  //         Total_Bottle: totalBeerbottle + totalIMFsbottle,
+  //         Total_amount: totalBeerprice + totalIMFsprice,
+  //         Invoice: data.invoice,
+  //       });
+
+  //       await newData.save();
+
+  //       response
+  //         .status(200)
+  //         .json({ message: "data saved successfully", newData });
+  //     }
+  //   } catch (error) {
+  //     console.log("error in save invoice data :", error);
+  //     response.send(error);
+  //   }
+  // },
   invoice: async (request, response) => {
     try {
       const data = request.body;
       const itemTypeWiseTotal = {};
       data.formDetails.forEach((entry) => {
-        const { Item_type, Size, Total_bottle } = entry;
+        const { Item_type, Size, Total_bottle = 0 } = entry;
         if (!itemTypeWiseTotal[Item_type]) {
           itemTypeWiseTotal[Item_type] = {};
         }
@@ -155,8 +265,6 @@ const Formcontroller = {
         itemTypeWiseTotal[Item_type][Size] += Total_bottle;
       });
 
-      // Log the result
-      console.log("Item Type Wise Total:", itemTypeWiseTotal);
       let totalBeerQuantity = 0;
       let totalIFSCQuantity = 0;
       let totalBeerbottle = 0;
@@ -164,62 +272,75 @@ const Formcontroller = {
       let totalIMFsbottle = 0;
       let totalIMFsprice = 0;
       data.formDetails.forEach((item) => {
-        // Check the type of sale (beer or IFSC) and update the corresponding total quantity
-        if (item.Item_type === "Beer_sale") {
-          totalBeerbottle += item.Total_bottle;
-          totalBeerprice += item.Total_value;
-        } else if (item.Item_type === "IMFS_sale") {
-          totalIMFsbottle += item.Total_bottle;
-          totalIMFsprice += item.Total_value;
+        const { Item_type, Total_bottle = 0, Total_value = 0 } = item;
+        if (Item_type === "Beer_sale") {
+          totalBeerbottle += Total_bottle;
+          totalBeerprice += Total_value;
+        } else if (Item_type === "IMFS_sale") {
+          totalIMFsbottle += Total_bottle;
+          totalIMFsprice += Total_value;
         }
       });
 
       data.formDetails.forEach((item) => {
-        // Check the type of sale (beer or IFSC) and update the corresponding total quantity
-        if (item.Item_type === "Beer_sale") {
-          totalBeerQuantity += item.Quantity;
-        } else if (item.Item_type === "IMFS_sale") {
-          totalIFSCQuantity += item.Quantity;
+        const { Item_type, Quantity = 0 } = item;
+        if (Item_type === "Beer_sale") {
+          totalBeerQuantity += Quantity;
+        } else if (Item_type === "IMFS_sale") {
+          totalIFSCQuantity += Quantity;
         }
       });
 
-      console.log(
-        "Total quantity for beer sales:",
-        totalBeerQuantity,
-        totalBeerbottle,
-        totalBeerprice
-      );
-      console.log(
-        "Total quantity for IFSC sales:",
-        totalIFSCQuantity,
-        totalIMFsbottle,
-        totalIMFsprice
-      );
-      const newData = new InvoiceNum({
-        Beer_size: itemTypeWiseTotal.Beer_sale,
-        IMFS_sie: itemTypeWiseTotal.IMFS_sale,
-        Beer_Case: totalBeerQuantity,
-        IMFS_case: totalIFSCQuantity,
-        Beer_total_bottle: totalBeerbottle,
-        Beer_total_value: totalBeerprice,
-        IMFS_total_bottle: totalIMFsbottle,
-        IMFS_total_value: totalIMFsprice,
-        Total_Case: totalBeerQuantity + totalIFSCQuantity,
-        Total_Bottle: totalBeerbottle + totalIMFsbottle,
-        Total_amount: totalBeerprice + totalIMFsprice,
-        Invoice: data.invoice,
-      });
+      const dateObject = new Date();
+      const year = dateObject.getFullYear();
+      const month = dateObject.getMonth() + 1;
+      const day = dateObject.getDate();
+      const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
+        .toString()
+        .padStart(2, "0")}`;
 
-      await newData.save();
-
-      response
-        .status(200)
-        .json({ message: "data saved successfully", newData });
+      let existingReport = await InvoiceNum.findOne({ Date: dateString });
+      if (existingReport) {
+        existingReport.Beer_size = itemTypeWiseTotal.Beer_sale;
+        existingReport.IMFS_sie = itemTypeWiseTotal.IMFS_sale;
+        existingReport.Beer_Case = totalBeerQuantity;
+        existingReport.IMFS_case = totalIFSCQuantity;
+        existingReport.Beer_total_bottle = totalBeerbottle;
+        existingReport.Beer_total_value = totalBeerprice;
+        existingReport.IMFS_total_bottle = totalIMFsbottle;
+        existingReport.IMFS_total_value = totalIMFsprice;
+        existingReport.Total_Case = totalBeerQuantity + totalIFSCQuantity;
+        existingReport.Total_Bottle = totalBeerbottle + totalIMFsbottle;
+        existingReport.Total_amount = totalBeerprice + totalIMFsprice;
+        existingReport.Invoice = data.invoice;
+        await existingReport.save();
+        response.status(200).json({ message: "Report updated successfully" });
+      } else {
+        const newData = new InvoiceNum({
+          Beer_size: itemTypeWiseTotal.Beer_sale,
+          IMFS_sie: itemTypeWiseTotal.IMFS_sale,
+          Beer_Case: totalBeerQuantity,
+          IMFS_case: totalIFSCQuantity,
+          Beer_total_bottle: totalBeerbottle,
+          Beer_total_value: totalBeerprice,
+          IMFS_total_bottle: totalIMFsbottle,
+          IMFS_total_value: totalIMFsprice,
+          Total_Case: totalBeerQuantity + totalIFSCQuantity,
+          Total_Bottle: totalBeerbottle + totalIMFsbottle,
+          Total_amount: totalBeerprice + totalIMFsprice,
+          Invoice: data.invoice,
+        });
+        await newData.save();
+        response
+          .status(200)
+          .json({ message: "Data saved successfully", newData });
+      }
     } catch (error) {
-      console.log("error in save invoice data :", error);
-      response.send(error);
+      console.error("Error in saving invoice data:", error);
+      response.status(500).json({ error: "Internal server error" });
     }
   },
+
   updateData: async (request, response) => {
     try {
       const Data = request.body;

@@ -13,6 +13,10 @@ const invoiceNumSchema = new mongoose.Schema({
   Total_Bottle: Number,
   Total_amount: Number,
   Invoice: String,
+  Date: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 const InvoiceNum = mongoose.model("InvoiceNum", invoiceNumSchema, "invoice");

@@ -413,14 +413,11 @@ const Formcontroller = {
         .padStart(2, "0")}`;
 
       for (const d of formDetails) {
-        // Check if an entry with the same Item_Code and Date exists
-        // console.log(dateString);
-        // const dateString = "2024-05-28T16:15:26.901Z";
-        const existingData = await DailyData.findOne({
-          // Item_Code: d.Item_Code,
+        const existingData = await DailyData.find({
+          Item_Code: d.Item_Code,
           Date: dateString,
         });
-        // console.log(existingData, "lkjhgcvgh");
+        console.log(existingData, "lkjhgcvgh");
 
         if (!existingData.length > 0) {
           // If no existing entry found, create a new one
@@ -452,7 +449,7 @@ const Formcontroller = {
           });
           console.log("dfghyuiop");
 
-          // await newdata.save();
+          await newdata.save();
         } else {
           // If an existing entry found, update it
           console.log("Already exists");

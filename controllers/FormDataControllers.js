@@ -417,7 +417,7 @@ const Formcontroller = {
         console.log(existingReport);
       }
       // formDetails.filter((data,i)=>data.Date== )
-      // for (const d of formDetails) {
+      for (const d of formDetails) {
       //   const existingData = await DailyData.find({
       //     // Item_Code: d.Item_Code,
       //     Date: dateString,
@@ -455,7 +455,8 @@ const Formcontroller = {
       //     console.log("dfghyuiop");
 
       await newdata.save();
-      //   } else {
+        } 
+      // else {
       //     // If an existing entry found, update it
       //     console.log("Already exists");
       //     existingData.Range = d.Range;

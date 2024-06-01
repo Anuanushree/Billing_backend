@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const DailyDataSchema = new mongoose.Schema({
   Date: {
     type: Date,
-    default: Date.now(),
   },
   Range: String,
   Product: String,

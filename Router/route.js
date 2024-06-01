@@ -9,10 +9,11 @@ userRouter.post("/signin", usercontroller.signin);
 userRouter.get("/list", usercontroller.list);
 userRouter.post("/forgot", usercontroller.forgot);
 userRouter.post("/reset", usercontroller.reset);
-
 userRouter.post("/create", Formcontroller.Create);
 userRouter.get("/getData", Formcontroller.getdata);
 userRouter.get("/getdailyData", Formcontroller.getdailyData);
+userRouter.post("/getReportSearch", ReportControllers.SearchByReportdata);
+userRouter.post("/getdailyDateSearch", Formcontroller.SearchByDateDailydata);
 userRouter.get("/getItemMaster", Formcontroller.getItemMaster);
 userRouter.get("/getinvoice", Formcontroller.getinvoice);
 userRouter.put("/updateReceipt", Formcontroller.itemUpdate);

@@ -1,6 +1,6 @@
 const User = require("../model/user");
 const FormData = require("../model/FormData");
-const { request } = require("express");
+const { request, response } = require("express");
 const DailyReport = require("../model/dailyReport");
 const Inward = require("../model/Invade");
 const DailyData = require("../model/dailydata");
@@ -362,6 +362,17 @@ const Formcontroller = {
     }
   },
 
+  delete: async (request, response) => {
+    for (const d of formDetails) {
+      const existingData = await DailyData.findOne({
+        Date: {
+          $gte: new Date(dateString), // Greater than or equal to the start of the date
+          $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
+        },
+        Item_Code: d.Item_Code,
+      });
+    }
+  },
   dd: async (request, response) => {
     try {
       const formDetails = request.body;
@@ -470,32 +481,6 @@ const Formcontroller = {
       }
       console.log(formDetails);
 
-      // formDetails.map((d) => {
-      //   const newForm = new FormData({
-      //     Range: d.Range,
-      //     Product: d.Product,
-      //     Description: d.Description,
-      //     Item_Code: d.Item_Code,
-      //     Size: d.Size,
-      //     MRP_Value: d.MRP_Value,
-      //     Opening_bottle: d.Opening_bottle,
-      //     Receipt_bottle: d.Receipt_bottle,
-      //     Case: d.Case,
-      //     Loose: d.Loose,
-      //     Item_type: d.Item_type,
-      //     Quantity: d.Quantity,
-      //     Opening_value: d.Opening_value,
-      //     // Receipt_value: d.Receipt_value,
-      //     // Total_value: d.Total_value,
-      //     // Total_bottle: d.Total_bottle,
-      //     // Closing_bottle: d.Closing_bottle,
-      //     // Sales_bottle: d.Sales_bottle,
-      //     // Sale_value: d.Sale_value,
-      //     // Closing_value: d.Closing_value,
-      //     updatedAt: Date.now(),
-      //   });
-      //   newForm.save();
-      // });
       response.json({ message: "daily data  successfully" });
     } catch (error) {
       response.json({ message: "Error in opening data  backend " });
@@ -538,6 +523,28 @@ const Formcontroller = {
     } catch (error) {
       response.json({ message: "Error in search case backend " });
       console.log("Error in search case backend :", error);
+    }
+  },
+
+  SearchByDateDailydata: async (req, res) => {
+    try {
+      const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
+      console.log(dateSearch);
+      // Search for daily data within the specified date range
+      const existingData = await DailyData.find({
+        Date: {
+          $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
+          $lt: dateSearch.toDate, // Less than the end of the date
+        },
+      });
+
+      res.json(existingData);
+    } catch (error) {
+      console.error("Error searching daily data by date range:", error);
+      res.status(500).json({
+        message: "Error in searching daily data by date range",
+        error: error.message,
+      });
     }
   },
 };

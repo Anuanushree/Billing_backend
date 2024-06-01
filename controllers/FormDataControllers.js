@@ -534,7 +534,7 @@ const Formcontroller = {
       const existingData = await DailyData.find({
         Date: {
           $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
-          $lt: dateSearch.toDate, // Less than the end of the date
+          $lte: dateSearch.toDate, // Less than the end of the date
         },
       });
 

@@ -83,21 +83,6 @@ const ReportControllers = {
     }
   },
   SearchByReportdata: async (req, res) => {
-    // try {
-    //   const { dateSearch } = request.body;
-    //   const existingData = await DailyData.find({
-    //     Date: {
-    //       $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
-    //       $lt: dateSearch.toDate, // Less than the end of the date
-    //     },
-    //   });
-    //   response.send(existingData);
-    // } catch (error) {
-    //   response.json({
-    //     message: "Error in search form date to date case backend ",
-    //   });
-    //   console.log("Error in search form date to date case backend :", error);
-    // }
     try {
       const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
       console.log(dateSearch);
@@ -105,7 +90,7 @@ const ReportControllers = {
       const existingData = await DailyReport.find({
         Date: {
           $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
-          $lt: dateSearch.toDate, // Less than the end of the date
+          $lte: dateSearch.toDate, // Less than the end of the date
         },
       });
 

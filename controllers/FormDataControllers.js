@@ -366,182 +366,93 @@ const Formcontroller = {
     try {
       const formDetails = request.body;
       const userId = request.userId;
-      // const copydata = await FormData.findById(Data.id);
-
-      // formDetails.map(async (d) => {
-      //   const newdata = new DailyData({
-      //     Range: d.Range,
-      //     Product: d.Product,
-      //     Description: d.Description,
-      //     Item_Code: d.Item_Code,
-      //     Size: d.Size,
-      //     MRP_Value: d.MRP_Value,
-      //     Opening_bottle: d.Opening_bottle,
-      //     Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
-
-      //     // console.log(closingBottle);
-
-      //     Case: d.Case == null ? 0 : d.Case,
-      //     Loose: d.Loose == null ? 0 : d.Loose,
-      //     Item_type: d.Item_type,
-      //     Quantity: d.Quantity,
-      //     Opening_value: d.Opening_value,
-      //     Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
-      //     Total_value: d.Total_value == null ? 0 : d.Total_value,
-      //     Total_bottle:
-      //       d.Total_bottle == null
-      //         ? d.Opening_bottle + d.Receipt_bottle
-      //         : d.Total_bottle,
-      //     Closing_bottle: d.Closing_bottle == null ? 0 : d.Closing_bottle,
-      //     Sales_bottle: d.Sales_bottle == null ? 0 : d.Sales_bottle,
-      //     Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
-      //     Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
-      //     updatedAt: Date.now(),
-      //   });
-      //   await newdata.save();
-      // });
       const dateObject = new Date();
 
       // Extracting date components
       const year = dateObject.getFullYear();
-      const month = dateObject.getMonth() + 1; // Month is zero-indexed, so we add 1
+      const month = dateObject.getMonth() + 1;
       const day = dateObject.getDate();
-
-      // Creating a date string in the format "YYYY-MM-DD"
       const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
         .toString()
         .padStart(2, "0")}`;
 
-      for (const d in formDetails) {
-        let existingReport = await DailyData.findOne({ Date: dateString }); // Checking if a report with the same date exists
-        console.log(existingReport);
-      }
-      // formDetails.filter((data,i)=>data.Date== )
       for (const d of formDetails) {
-      //   const existingData = await DailyData.find({
-      //     // Item_Code: d.Item_Code,
-      //     Date: dateString,
-      //   });
-      //   console.log(existingData, "lkjhgcvgh");
-
-      //   if (!existingData.length > 0) {
-      //     // If no existing entry found, create a new one
-      const newdata = new DailyData({
-        Range: d.Range,
-        Product: d.Product,
-        Description: d.Description,
-        Item_Code: d.Item_Code,
-        Size: d.Size,
-        MRP_Value: d.MRP_Value,
-        Opening_bottle: d.Opening_bottle,
-        Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
-        Case: d.Case == null ? 0 : d.Case,
-        Loose: d.Loose == null ? 0 : d.Loose,
-        Item_type: d.Item_type,
-        Quantity: d.Quantity,
-        Opening_value: d.Opening_value,
-        Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
-        Total_value: d.Total_value == null ? 0 : d.Total_value,
-        Total_bottle:
-          d.Total_bottle == null
-            ? d.Opening_bottle + d.Receipt_bottle
-            : d.Total_bottle,
-        Closing_bottle: d.Closing_bottle == null ? 0 : d.Closing_bottle,
-        Sales_bottle: d.Sales_bottle == null ? 0 : d.Sales_bottle,
-        Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
-        Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
-        updatedAt: Date.now(),
-      });
-      //     console.log("dfghyuiop");
-
-      await newdata.save();
-        } 
-      // else {
-      //     // If an existing entry found, update it
-      //     console.log("Already exists");
-      //     existingData.Range = d.Range;
-      //     existingData.Product = d.Product;
-      //     existingData.Description = d.Description;
-      //     existingData.Size = d.Size;
-      //     existingData.MRP_Value = d.MRP_Value;
-      //     existingData.Opening_bottle = d.Opening_bottle;
-      //     existingData.Receipt_bottle =
-      //       d.Receipt_bottle == null ? 0 : d.Receipt_bottle;
-      //     existingData.Case = d.Case == null ? 0 : d.Case;
-      //     existingData.Loose = d.Loose == null ? 0 : d.Loose;
-      //     existingData.Item_type = d.Item_type;
-      //     existingData.Quantity = d.Quantity;
-      //     existingData.Opening_value = d.Opening_value;
-      //     existingData.Receipt_value =
-      //       d.Receipt_value == null ? 0 : d.Receipt_value;
-      //     existingData.Total_value = d.Total_value == null ? 0 : d.Total_value;
-      //     existingData.Total_bottle =
-      //       d.Total_bottle == null
-      //         ? d.Opening_bottle + d.Receipt_bottle
-      //         : d.Total_bottle;
-      //     existingData.Closing_bottle =
-      //       d.Closing_bottle == null ? 0 : d.Closing_bottle;
-      //     existingData.Sales_bottle =
-      //       d.Sales_bottle == null ? 0 : d.Sales_bottle;
-      //     existingData.Sale_value = d.Sale_value == null ? 0 : d.Sale_value;
-      //     existingData.Closing_value =
-      //       d.Closing_value == null ? 0 : d.Closing_value;
-      //     existingData.updatedAt = Date.now();
-
-      //     await existingData.save();
-      //   }
-      // }
-
-      //  response.json({ message: "Daily data successfully processed" });
-      formDetails.map(async (d) => {
-        // const find = await FormData.findById(d._id);
-
-        var totalValue =
-          d.Closing_bottle == null
-            ? d.MRP_Value * d.Total_bottle
-            : d.MRP_Value * d.Closing_bottle;
-        // var openingbottle = find.Total_bottle - parseInt(find.Sales_bottle);
-        // console.log(openingbottle);
-        var newform = await FormData.findByIdAndUpdate(d._id, {
-          Opening_bottle:
-            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
-          Opening_value:
-            d.Closing_bottle == null
-              ? d.MRP_Value * d.Total_bottle
-              : d.MRP_Value * d.Closing_bottle,
-          Receipt_value: null,
-          Total_value: totalValue,
-          updatedAt: Date.now(),
-          Total_bottle: null,
-          Receipt_bottle: null,
-          Closing_bottle: null,
-          Sales_bottle: null,
-          Sale_value: null,
-          Closing_value: null,
-          Case: null,
-          Loose: null,
-          Total_bottle:
-            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+        const existingData = await DailyData.findOne({
+          Date: {
+            $gte: new Date(dateString), // Greater than or equal to the start of the date
+            $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
+          },
+          Item_Code: d.Item_Code,
         });
-        await newform.save();
-        // } else {
-        //   var newform = await FormData.findByIdAndUpdate(d._id, {
-        //     Opening_bottle: find.Opening_bottle,
-        //     Opening_value: find.MRP_Value * find.Opening_bottle,
-        //     Receipt_value: find.MRP_Value * find.Receipt_bottle,
-        //     Total_value: find.Total_value,
-        //     updatedAt: Date.now(),
-        //     Total_bottle: null,
-        //     Closing_bottle: null,
-        //     Sales_bottle: null,
-        //     Sale_value: null,
-        //     Closing_value: null,
-        //     Case: null,
-        //     Loose: null,
-        //   });
-      });
 
-      response.json({ message: "daily data  successfully" });
+        if (!existingData) {
+          //     // If no existing entry found, create a new one
+          const newdata = new DailyData({
+            Range: d.Range,
+            Product: d.Product,
+            Description: d.Description,
+            Item_Code: d.Item_Code,
+            Size: d.Size,
+            MRP_Value: d.MRP_Value,
+            Opening_bottle: d.Opening_bottle,
+            Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
+            Case: d.Case == null ? 0 : d.Case,
+            Loose: d.Loose == null ? 0 : d.Loose,
+            Item_type: d.Item_type,
+            Quantity: d.Quantity,
+            Opening_value: d.Opening_value,
+            Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
+            Total_value: d.Total_value == null ? 0 : d.Total_value,
+            Total_bottle:
+              d.Total_bottle == null
+                ? d.Opening_bottle + d.Receipt_bottle
+                : d.Total_bottle,
+            Closing_bottle: d.Closing_bottle == null ? 0 : d.Closing_bottle,
+            Sales_bottle: d.Sales_bottle == null ? 0 : d.Sales_bottle,
+            Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
+            Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
+            updatedAt: Date.now(),
+          });
+          console.log("dfghyuiop");
+
+          await newdata.save();
+
+          response.json({ message: "Daily data successfully processed" });
+          formDetails.map(async (d) => {
+            // const find = await FormData.findById(d._id);
+
+            var totalValue =
+              d.Closing_bottle == null
+                ? d.MRP_Value * d.Total_bottle
+                : d.MRP_Value * d.Closing_bottle;
+
+            var newform = await FormData.findByIdAndUpdate(d._id, {
+              Opening_bottle:
+                d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+              Opening_value:
+                d.Closing_bottle == null
+                  ? d.MRP_Value * d.Total_bottle
+                  : d.MRP_Value * d.Closing_bottle,
+              Receipt_value: null,
+              Total_value: totalValue,
+              updatedAt: Date.now(),
+              Total_bottle: null,
+              Receipt_bottle: null,
+              Closing_bottle: null,
+              Sales_bottle: null,
+              Sale_value: null,
+              Closing_value: null,
+              Case: null,
+              Loose: null,
+              Total_bottle:
+                d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+            });
+            await newform.save();
+          });
+
+          response.json({ message: "daily data  successfully" });
+        }
+      }
     } catch (error) {
       response.json({ message: "Error in daily data  backend " });
       console.log("Error in daily data  backend :", error);

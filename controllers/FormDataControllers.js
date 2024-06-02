@@ -269,11 +269,14 @@ const Formcontroller = {
       });
 
       data.formDetails.forEach((item) => {
-        const { Item_type, Quantity = 0 } = item;
+        const { Item_type, Quantity, Total_bottle } = item;
         if (Item_type === "Beer_sale") {
-          totalBeerQuantity += Quantity;
+          var val = Math.round(Total_bottle / Quantity);
+
+          totalBeerQuantity += val;
         } else if (Item_type === "IMFS_sale") {
-          totalIFSCQuantity += Quantity;
+          var val1 = Math.round(Total_bottle / Quantity);
+          totalIFSCQuantity += val1;
         }
       });
 

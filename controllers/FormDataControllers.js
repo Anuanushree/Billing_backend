@@ -285,42 +285,51 @@ const Formcontroller = {
         .toString()
         .padStart(2, "0")}`;
 
-      let existingReport = await InvoiceNum.findOne({ Date: dateString });
-      if (existingReport) {
-        existingReport.Beer_size = itemTypeWiseTotal.Beer_sale;
-        existingReport.IMFS_sie = itemTypeWiseTotal.IMFS_sale;
-        existingReport.Beer_Case = totalBeerQuantity;
-        existingReport.IMFS_case = totalIFSCQuantity;
-        existingReport.Beer_total_bottle = totalBeerbottle;
-        existingReport.Beer_total_value = totalBeerprice;
-        existingReport.IMFS_total_bottle = totalIMFsbottle;
-        existingReport.IMFS_total_value = totalIMFsprice;
-        existingReport.Total_Case = totalBeerQuantity + totalIFSCQuantity;
-        existingReport.Total_Bottle = totalBeerbottle + totalIMFsbottle;
-        existingReport.Total_amount = totalBeerprice + totalIMFsprice;
-        existingReport.Invoice = data.invoice;
-        await existingReport.save();
-        response.status(200).json({ message: "Report updated successfully" });
-      } else {
-        const newData = new InvoiceNum({
-          Beer_size: itemTypeWiseTotal.Beer_sale,
-          IMFS_sie: itemTypeWiseTotal.IMFS_sale,
-          Beer_Case: totalBeerQuantity,
-          IMFS_case: totalIFSCQuantity,
-          Beer_total_bottle: totalBeerbottle,
-          Beer_total_value: totalBeerprice,
-          IMFS_total_bottle: totalIMFsbottle,
-          IMFS_total_value: totalIMFsprice,
-          Total_Case: totalBeerQuantity + totalIFSCQuantity,
-          Total_Bottle: totalBeerbottle + totalIMFsbottle,
-          Total_amount: totalBeerprice + totalIMFsprice,
-          Invoice: data.invoice,
+      // let existingReport = await InvoiceNum.findOne({ Date: dateString });
+      // console.log(existingReport);
+
+      for (const d of data.formDetails) {
+        const existingReport = await InvoiceNum.findOne({
+          Date: {
+            $gte: new Date(dateString), // Greater than or equal to the start of the date
+            $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
+          },
         });
-        await newData.save();
-        response
-          .status(200)
-          .json({ message: "Data saved successfully", newData });
+        // console.log(existingData);
+
+        if (existingReport) {
+          existingReport.Beer_size = itemTypeWiseTotal.Beer_sale;
+          existingReport.IMFS_sie = itemTypeWiseTotal.IMFS_sale;
+          existingReport.Beer_Case = totalBeerQuantity;
+          existingReport.IMFS_case = totalIFSCQuantity;
+          existingReport.Beer_total_bottle = totalBeerbottle;
+          existingReport.Beer_total_value = totalBeerprice;
+          existingReport.IMFS_total_bottle = totalIMFsbottle;
+          existingReport.IMFS_total_value = totalIMFsprice;
+          existingReport.Total_Case = totalBeerQuantity + totalIFSCQuantity;
+          existingReport.Total_Bottle = totalBeerbottle + totalIMFsbottle;
+          existingReport.Total_amount = totalBeerprice + totalIMFsprice;
+          existingReport.Invoice = data.invoice;
+          await existingReport.save();
+        } else {
+          const newData = new InvoiceNum({
+            Beer_size: itemTypeWiseTotal.Beer_sale,
+            IMFS_sie: itemTypeWiseTotal.IMFS_sale,
+            Beer_Case: totalBeerQuantity,
+            IMFS_case: totalIFSCQuantity,
+            Beer_total_bottle: totalBeerbottle,
+            Beer_total_value: totalBeerprice,
+            IMFS_total_bottle: totalIMFsbottle,
+            IMFS_total_value: totalIMFsprice,
+            Total_Case: totalBeerQuantity + totalIFSCQuantity,
+            Total_Bottle: totalBeerbottle + totalIMFsbottle,
+            Total_amount: totalBeerprice + totalIMFsprice,
+            Invoice: data.invoice,
+          });
+          await newData.save();
+        }
       }
+      response.status(200).json({ message: "Report updated successfully" });
     } catch (error) {
       console.error("Error in saving invoice data:", error);
       response.status(500).json({ error: "Internal server error" });

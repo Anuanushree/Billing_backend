@@ -541,11 +541,11 @@ const Formcontroller = {
       // Search for daily data within the specified date range
       const existingData = await DailyData.find({
         Date: {
-          $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
-          $lte: dateSearch.toDate, // Less than the end of the date
+          $gte: new Date(dateSearch.fromDate), // Greater than or equal to the start of the date
+          $lte: new Date(new Date(dateSearch.toDate).setHours(23, 59, 59, 999)), // Less than or equal to the end of the date
         },
       });
-
+      console.log(existingData);
       res.json(existingData);
     } catch (error) {
       console.error("Error searching daily data by date range:", error);

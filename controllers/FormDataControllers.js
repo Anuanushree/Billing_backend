@@ -427,43 +427,42 @@ const Formcontroller = {
           console.log("dfghyuiop");
 
           await newdata.save();
-
-          response.json({ message: "Daily data successfully processed" });
-          formDetails.map(async (d) => {
-            // const find = await FormData.findById(d._id);
-
-            var totalValue =
-              d.Closing_bottle == null
-                ? d.MRP_Value * d.Total_bottle
-                : d.MRP_Value * d.Closing_bottle;
-
-            var newform = await FormData.findByIdAndUpdate(d._id, {
-              Opening_bottle:
-                d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
-              Opening_value:
-                d.Closing_bottle == null
-                  ? d.MRP_Value * d.Total_bottle
-                  : d.MRP_Value * d.Closing_bottle,
-              Receipt_value: null,
-              Total_value: totalValue,
-              updatedAt: Date.now(),
-              Total_bottle: null,
-              Receipt_bottle: null,
-              Closing_bottle: null,
-              Sales_bottle: null,
-              Sale_value: null,
-              Closing_value: null,
-              Case: null,
-              Loose: null,
-              Total_bottle:
-                d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
-            });
-            await newform.save();
-          });
-
-          response.json({ message: "daily data  successfully" });
         }
       }
+
+      formDetails.map(async (d) => {
+        // const find = await FormData.findById(d._id);
+
+        var totalValue =
+          d.Closing_bottle == null
+            ? d.MRP_Value * d.Total_bottle
+            : d.MRP_Value * d.Closing_bottle;
+
+        var newform = await FormData.findByIdAndUpdate(d._id, {
+          Opening_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+          Opening_value:
+            d.Closing_bottle == null
+              ? d.MRP_Value * d.Total_bottle
+              : d.MRP_Value * d.Closing_bottle,
+          Receipt_value: null,
+          Total_value: totalValue,
+          updatedAt: Date.now(),
+          Total_bottle: null,
+          Receipt_bottle: null,
+          Closing_bottle: null,
+          Sales_bottle: null,
+          Sale_value: null,
+          Closing_value: null,
+          Case: null,
+          Loose: null,
+          Total_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+        });
+        await newform.save();
+      });
+
+      response.json({ message: "daily data  successfully" });
     } catch (error) {
       response.json({ message: "Error in daily data  backend " });
       console.log("Error in daily data  backend :", error);

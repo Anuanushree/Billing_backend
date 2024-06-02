@@ -1,6 +1,7 @@
 const { now } = require("mongoose");
 const DailyReport = require("../model/dailyReport");
 const Sale = require("../model/sale");
+const InvoiceNum = require("../model/invoiceNum");
 
 const ReportControllers = {
   saveReport: async (request, response) => {
@@ -95,6 +96,28 @@ const ReportControllers = {
       });
 
       res.json(existingData);
+    } catch (error) {
+      console.error("Error searching daily data by date range:", error);
+      res.status(500).json({
+        message: "Error in searching daily data by date range",
+        error: error.message,
+      });
+    }
+  },
+  SearchInvoice: async (req, res) => {
+    try {
+      const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
+      console.log(dateSearch);
+      // Search for daily data within the specified date range
+      const existingData = await InvoiceNum.find({
+        Date: {
+          $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
+          $lte: dateSearch.toDate, // Less than the end of the date
+        },
+      });
+
+      res.json(existingData);
+      console.log(existingData);
     } catch (error) {
       console.error("Error searching daily data by date range:", error);
       res.status(500).json({

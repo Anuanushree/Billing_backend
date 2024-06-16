@@ -242,14 +242,14 @@ const Formcontroller = {
       const data = request.body;
       const itemTypeWiseTotal = {};
       data.formDetails.forEach((entry) => {
-        const { Item_type, Size, Total_bottle = 0 } = entry;
+        const { Item_type, Size, Receipt_bottle = 0 } = entry;
         if (!itemTypeWiseTotal[Item_type]) {
           itemTypeWiseTotal[Item_type] = {};
         }
         if (!itemTypeWiseTotal[Item_type][Size]) {
           itemTypeWiseTotal[Item_type][Size] = 0;
         }
-        itemTypeWiseTotal[Item_type][Size] += Total_bottle;
+        itemTypeWiseTotal[Item_type][Size] += Receipt_bottle;
       });
 
       let totalBeerQuantity = 0;
@@ -259,24 +259,24 @@ const Formcontroller = {
       let totalIMFsbottle = 0;
       let totalIMFsprice = 0;
       data.formDetails.forEach((item) => {
-        const { Item_type, Total_bottle = 0, Total_value = 0 } = item;
+        const { Item_type, Receipt_bottle = 0, Receipt_value = 0 } = item;
         if (Item_type === "Beer_sale") {
-          totalBeerbottle += Total_bottle;
-          totalBeerprice += Total_value;
+          totalBeerbottle += Receipt_bottle;
+          totalBeerprice += Receipt_value;
         } else if (Item_type === "IMFS_sale") {
-          totalIMFsbottle += Total_bottle;
-          totalIMFsprice += Total_value;
+          totalIMFsbottle += Receipt_bottle;
+          totalIMFsprice += Receipt_value;
         }
       });
 
       data.formDetails.forEach((item) => {
-        const { Item_type, Quantity, Total_bottle } = item;
+        const { Item_type, Quantity, Receipt_bottle } = item;
         if (Item_type === "Beer_sale") {
-          var val = Math.round(Total_bottle / Quantity);
+          var val = Math.round(Receipt_bottle / Quantity);
 
           totalBeerQuantity += val;
         } else if (Item_type === "IMFS_sale") {
-          var val1 = Math.round(Total_bottle / Quantity);
+          var val1 = Math.round(Receipt_bottle / Quantity);
           totalIFSCQuantity += val1;
         }
       });

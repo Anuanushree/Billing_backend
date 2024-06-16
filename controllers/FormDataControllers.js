@@ -104,6 +104,7 @@ const Formcontroller = {
         parseInt(data.editMRP) * parseInt(data.OpeningBottle) +
         parseInt(data.editMRP) * parseInt(data.ReceiptBottle);
       const searchId = await FormData.findByIdAndUpdate(data.id, {
+        Range: data.ranageEdit,
         Description: data.desciption,
         Receipt_bottle: parseInt(data.ReceiptBottle),
         Opening_bottle: parseInt(data.OpeningBottle),

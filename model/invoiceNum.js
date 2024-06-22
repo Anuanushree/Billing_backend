@@ -17,6 +17,10 @@ const invoiceNumSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const InvoiceNum = mongoose.model("InvoiceNum", invoiceNumSchema, "invoice");

@@ -26,6 +26,10 @@ const inwardSchema = new mongoose.Schema({
   updated: {
     type: Date,
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   invoice: String,
 });
 

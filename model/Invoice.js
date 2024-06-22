@@ -7,6 +7,10 @@ const invoiceReportSchema = new mongoose.Schema({
   Bank: Number,
   Date: { type: Date, default: Date.now() },
   Paytm: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const InvoiceReport = mongoose.model(

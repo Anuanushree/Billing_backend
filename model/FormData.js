@@ -31,6 +31,10 @@ const formDataSchema = new mongoose.Schema({
     default: Date.now(),
   },
   invoice: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const FormData = mongoose.model("FormData", formDataSchema, "formData");

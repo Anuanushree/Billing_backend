@@ -12,8 +12,8 @@ const Formcontroller = {
   Create: async (request, response) => {
     try {
       const { formData } = request.body;
-      // const userId = request.userId;
-      // const user = await User.findById(userId);
+      const userId = request.userId;
+      const user = await User.findById(userId);
       var Quantity = 0;
       console.log(formData);
       if (formData.Size == 650 || formData.Size == 750) {
@@ -54,29 +54,15 @@ const Formcontroller = {
         Opening_value: formData.MRP_Value * formData.Opening_bottle,
         Receipt_value: formData.MRP_Value * formData.Receipt_bottle,
         Total_value: totalValue,
+        Total_bottle: formData.Opening_bottle + formData.Receipt_bottle,
+        user: user._id,
       });
       console.log(addData);
       const newdata = await addData.save();
-      const newInward = new Inward({
-        // ...addData,
-        Date: formData.date,
-        Range: formData.Range,
-        Product: formData.Product,
-        Description: formData.Description,
-        Item_Code: formData.Item_Code,
-        Case_Quantity: formData.Case_Quantity,
-        MRP_Value: formData.MRP_Value,
-        Size: formData.Size,
-        Item_type: formData.Item_type,
-        Receipt_bottle: formData.Receipt_bottle,
-        Opening_bottle: formData.Opening_bottle,
-        Quantity: Quantity,
-        Opening_value: formData.MRP_Value * formData.Opening_bottle,
-        Receipt_value: formData.MRP_Value * formData.Receipt_bottle,
-        Total_value: totalValue,
-      });
+      user.data = user.data.concat(newdata._id);
 
-      await newInward.save();
+      await user.save();
+
       response.status(200).json({ message: "data saved successfully" });
     } catch (error) {
       console.log("error in save Form data :", error);
@@ -86,7 +72,8 @@ const Formcontroller = {
 
   getdata: async (request, response) => {
     try {
-      const data = await FormData.find({}, {});
+      const userId = request.userId;
+      const data = await FormData.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -127,119 +114,10 @@ const Formcontroller = {
     }
   },
 
-  // invoice: async (request, response) => {
-  //   try {
-  //     const data = request.body;
-  //     const itemTypeWiseTotal = {};
-  //     data.formDetails.forEach((entry) => {
-  //       const { Item_type, Size, Total_bottle } = entry;
-  //       if (!itemTypeWiseTotal[Item_type]) {
-  //         itemTypeWiseTotal[Item_type] = {};
-  //       }
-  //       if (!itemTypeWiseTotal[Item_type][Size]) {
-  //         itemTypeWiseTotal[Item_type][Size] = 0;
-  //       }
-  //       itemTypeWiseTotal[Item_type][Size] += Total_bottle;
-  //     });
-
-  //     // Log the result
-  //     console.log("Item Type Wise Total:", itemTypeWiseTotal);
-  //     let totalBeerQuantity = 0;
-  //     let totalIFSCQuantity = 0;
-  //     let totalBeerbottle = 0;
-  //     let totalBeerprice = 0;
-  //     let totalIMFsbottle = 0;
-  //     let totalIMFsprice = 0;
-  //     data.formDetails.forEach((item) => {
-  //       // Check the type of sale (beer or IFSC) and update the corresponding total quantity
-  //       if (item.Item_type === "Beer_sale") {
-  //         totalBeerbottle += item.Total_bottle;
-  //         totalBeerprice += item.Total_value;
-  //       } else if (item.Item_type === "IMFS_sale") {
-  //         totalIMFsbottle += item.Total_bottle;
-  //         totalIMFsprice += item.Total_value;
-  //       }
-  //     });
-
-  //     data.formDetails.forEach((item) => {
-  //       // Check the type of sale (beer or IFSC) and update the corresponding total quantity
-  //       if (item.Item_type === "Beer_sale") {
-  //         totalBeerQuantity += item.Quantity;
-  //       } else if (item.Item_type === "IMFS_sale") {
-  //         totalIFSCQuantity += item.Quantity;
-  //       }
-  //     });
-
-  //     console.log(
-  //       "Total quantity for beer sales:",
-  //       totalBeerQuantity,
-  //       totalBeerbottle,
-  //       totalBeerprice
-  //     );
-  //     console.log(
-  //       "Total quantity for IFSC sales:",
-  //       totalIFSCQuantity,
-  //       totalIMFsbottle,
-  //       totalIMFsprice
-  //     );
-  //     const dateObject = new Date();
-
-  //     // Extracting date components
-  //     const year = dateObject.getFullYear();
-  //     const month = dateObject.getMonth() + 1; // Month is zero-indexed, so we add 1
-  //     const day = dateObject.getDate();
-
-  //     // Creating a date string in the format "YYYY-MM-DD"
-  //     const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
-  //       .toString()
-  //       .padStart(2, "0")}`;
-
-  //     let existingReport = await DailyReport.findOne({ Date: dateString }); // Checking if a report with the same date exists
-  //     if (existingReport) {
-  //       (existingReport.Beer_size = itemTypeWiseTotal.Beer_sale),
-  //         (existingReport.IMFS_sie = itemTypeWiseTotal.IMFS_sale),
-  //         (existingReport.Beer_Case = totalBeerQuantity),
-  //         (existingReport.IMFS_case = totalIFSCQuantity),
-  //         (existingReport.Beer_total_bottle = totalBeerbottle),
-  //         (existingReport.Beer_total_value = totalBeerprice),
-  //         (existingReport.IMFS_total_bottle = totalIMFsbottle),
-  //         (existingReport.IMFS_total_value = totalIMFsprice),
-  //         (existingReport.Total_Case = totalBeerQuantity + totalIFSCQuantity),
-  //         (existingReport.Total_Bottle = totalBeerbottle + totalIMFsbottle),
-  //         (existingReport.Total_amount = totalBeerprice + totalIMFsprice),
-  //         (existingReport.Invoice = data.invoice),
-  //         await existingReport.save();
-  //       response.status(200).json({ message: "Report updated successfully" });
-  //     } else {
-  //       const newData = new InvoiceNum({
-  //         Beer_size: itemTypeWiseTotal.Beer_sale,
-  //         IMFS_sie: itemTypeWiseTotal.IMFS_sale,
-  //         Beer_Case: totalBeerQuantity,
-  //         IMFS_case: totalIFSCQuantity,
-  //         Beer_total_bottle: totalBeerbottle,
-  //         Beer_total_value: totalBeerprice,
-  //         IMFS_total_bottle: totalIMFsbottle,
-  //         IMFS_total_value: totalIMFsprice,
-  //         Total_Case: totalBeerQuantity + totalIFSCQuantity,
-  //         Total_Bottle: totalBeerbottle + totalIMFsbottle,
-  //         Total_amount: totalBeerprice + totalIMFsprice,
-  //         Invoice: data.invoice,
-  //       });
-
-  //       await newData.save();
-
-  //       response
-  //         .status(200)
-  //         .json({ message: "data saved successfully", newData });
-  //     }
-  //   } catch (error) {
-  //     console.log("error in save invoice data :", error);
-  //     response.send(error);
-  //   }
-  // },
   invoice: async (request, response) => {
     try {
       const data = request.body;
+      const userId = request.userId;
       const itemTypeWiseTotal = {};
       data.formDetails.forEach((entry) => {
         const { Item_type, Size, Receipt_bottle = 0 } = entry;
@@ -299,7 +177,6 @@ const Formcontroller = {
             $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
           },
         });
-        // console.log(existingData);
 
         if (existingReport) {
           existingReport.Beer_size = itemTypeWiseTotal.Beer_sale;
@@ -329,6 +206,7 @@ const Formcontroller = {
             Total_Bottle: totalBeerbottle + totalIMFsbottle,
             Total_amount: totalBeerprice + totalIMFsprice,
             Invoice: data.invoice,
+            user: userId,
           });
           await newData.save();
         }
@@ -368,7 +246,9 @@ const Formcontroller = {
         // Opening_bottle: openingbottle,
       });
       await searchId.save();
-      response.json({ message: "case updated successfully" });
+      const userId = request.userId;
+      const res = await FormData.find({ user: userId });
+      response.send(res);
     } catch (error) {
       response.json({ message: "Error in updating case backend " });
       console.log("Error in updating case backend :", error);
@@ -436,6 +316,7 @@ const Formcontroller = {
             Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
             Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
             updatedAt: Date.now(),
+            user: userId,
           });
           console.log("dfghyuiop");
 
@@ -501,7 +382,8 @@ const Formcontroller = {
   },
   getdailyData: async (request, response) => {
     try {
-      const data = await DailyData.find({}, {});
+      const userId = request.userId;
+      const data = await DailyData.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -510,7 +392,8 @@ const Formcontroller = {
   },
   getinvoice: async (request, response) => {
     try {
-      const data = await InvoiceNum.find({}, {});
+      const userId = request.userId;
+      const data = await InvoiceNum.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -519,7 +402,8 @@ const Formcontroller = {
   },
   getItemMaster: async (request, response) => {
     try {
-      const data = await Inward.find({}, {});
+      const userId = request.userId;
+      const data = await FormData.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -530,7 +414,8 @@ const Formcontroller = {
     try {
       const { chk } = request.body;
       console.log(chk);
-      const searchdate = await FormData.find({ date: chk }, {});
+      const userId = request.userId;
+      const searchdate = await FormData.find({ date: chk, user: userId });
       response.send(searchdate);
     } catch (error) {
       response.json({ message: "Error in search case backend " });
@@ -540,7 +425,9 @@ const Formcontroller = {
 
   SearchByDateDailydata: async (req, res) => {
     try {
-      const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
+      const { dateSearch } = req.body;
+      const userId = request.userId;
+      // Assuming dateSearch contains fromDate and toDate
       console.log(dateSearch);
       // Search for daily data within the specified date range
       const existingData = await DailyData.find({
@@ -548,6 +435,7 @@ const Formcontroller = {
           $gte: new Date(dateSearch.fromDate), // Greater than or equal to the start of the date
           $lte: new Date(new Date(dateSearch.toDate).setHours(23, 59, 59, 999)), // Less than or equal to the end of the date
         },
+        user: userId,
       });
       console.log(existingData);
       res.json(existingData);

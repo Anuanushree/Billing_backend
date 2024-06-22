@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema({
   data: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Income",
+      ref: "FormData",
     },
   ],
   profilename: {

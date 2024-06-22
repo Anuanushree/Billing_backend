@@ -8,7 +8,7 @@ const ReportControllers = {
     try {
       const { Pos, Cash, Sale, Bank, Paytm } = request.body; // Assuming DateTime is included in the request body
       const dateObject = new Date();
-
+      const userId = request.userId;
       // Extracting date components
       const year = dateObject.getFullYear();
       const month = dateObject.getMonth() + 1; // Month is zero-indexed, so we add 1
@@ -38,7 +38,8 @@ const ReportControllers = {
           Sale,
           Bank,
           Paytm,
-          Date: dateString, // Assuming Date is a field in the DailyReport schema
+          Date: dateString,
+          user: userId,
         });
         await newData.save();
         response.status(200).json({ message: "Report added successfully" });
@@ -50,7 +51,8 @@ const ReportControllers = {
   },
   get: async (request, response) => {
     try {
-      const data = await DailyReport.find({}, {});
+      const userId = request.userId;
+      const data = await DailyReport.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -76,7 +78,8 @@ const ReportControllers = {
   },
   getSaleData: async (request, response) => {
     try {
-      const data = await Sale.find({}, {});
+      const userId = request.userId;
+      const data = await Sale.find({ user: userId });
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });
@@ -87,12 +90,14 @@ const ReportControllers = {
     try {
       const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
       console.log(dateSearch);
+      const userId = request.userId;
       // Search for daily data within the specified date range
       const existingData = await DailyReport.find({
         Date: {
           $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
           $lte: dateSearch.toDate, // Less than the end of the date
         },
+        user: userId,
       });
 
       res.json(existingData);
@@ -108,12 +113,14 @@ const ReportControllers = {
     try {
       const { dateSearch } = req.body; // Assuming dateSearch contains fromDate and toDate
       console.log(dateSearch);
+      const userId = request.userId;
       // Search for daily data within the specified date range
       const existingData = await InvoiceNum.find({
         Date: {
           $gte: dateSearch.fromDate, // Greater than or equal to the start of the date
           $lte: dateSearch.toDate, // Less than the end of the date
         },
+        user: userId,
       });
 
       res.json(existingData);

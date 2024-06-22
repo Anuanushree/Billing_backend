@@ -7,6 +7,10 @@ const dailyReportSchema = new mongoose.Schema({
   Bank: Number,
   Date: { type: Date, default: Date.now() },
   Paytm: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 const DailyReport = mongoose.model(

@@ -9,6 +9,10 @@ const SaleDataSchema = new mongoose.Schema({
   Product: String,
   Closing_value: Number,
   Total: String,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   date: {
     type: Date,
     default: Date.now(),

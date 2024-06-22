@@ -5,6 +5,10 @@ const DailyDataSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
   Range: String,
   Product: String,
   Description: String,

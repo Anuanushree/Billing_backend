@@ -9,27 +9,76 @@ userRouter.post("/signin", usercontroller.signin);
 userRouter.get("/list", usercontroller.list);
 userRouter.post("/forgot", usercontroller.forgot);
 userRouter.post("/reset", usercontroller.reset);
+userRouter.get(
+  "/profile",
+  authmiddleware.verifyToken,
+  usercontroller.getprofile
+);
 
-userRouter.post("/create", Formcontroller.Create);
-userRouter.get("/getData", Formcontroller.getdata);
-userRouter.get("/getdailyData", Formcontroller.getdailyData);
-userRouter.post("/getReportSearch", ReportControllers.SearchByReportdata);
-userRouter.post("/getdailyDateSearch", Formcontroller.SearchByDateDailydata);
-userRouter.get("/getItemMaster", Formcontroller.getItemMaster);
-userRouter.get("/getinvoice", Formcontroller.getinvoice);
-userRouter.put("/updateReceipt", Formcontroller.itemUpdate);
+userRouter.post("/create", authmiddleware.verifyToken, Formcontroller.Create);
+userRouter.get("/getData", authmiddleware.verifyToken, Formcontroller.getdata);
+userRouter.get(
+  "/getdailyData",
+  authmiddleware.verifyToken,
+  Formcontroller.getdailyData
+);
+userRouter.post(
+  "/getReportSearch",
+  authmiddleware.verifyToken,
+  ReportControllers.SearchByReportdata
+);
+userRouter.post(
+  "/getdailyDateSearch",
+  authmiddleware.verifyToken,
+  Formcontroller.SearchByDateDailydata
+);
+userRouter.get(
+  "/getItemMaster",
+  authmiddleware.verifyToken,
+  Formcontroller.getItemMaster
+);
+userRouter.get(
+  "/getinvoice",
+  authmiddleware.verifyToken,
+  Formcontroller.getinvoice
+);
+userRouter.put(
+  "/updateReceipt",
+  authmiddleware.verifyToken,
+  Formcontroller.itemUpdate
+);
 
-userRouter.post("/getInvoiceSearch", ReportControllers.SearchInvoice);
+userRouter.post(
+  "/getInvoiceSearch",
+  authmiddleware.verifyToken,
+  ReportControllers.SearchInvoice
+);
 
-userRouter.put("/openingUpdate", Formcontroller.openingUpdate);
-userRouter.put("/updateData", Formcontroller.updateData);
-userRouter.post("/search", Formcontroller.search);
-userRouter.post("/dailyData", Formcontroller.dd);
-userRouter.post("/invoice", Formcontroller.invoice);
+userRouter.put(
+  "/openingUpdate",
+  authmiddleware.verifyToken,
+  Formcontroller.openingUpdate
+);
+userRouter.put(
+  "/updateData",
+  authmiddleware.verifyToken,
+  Formcontroller.updateData
+);
+userRouter.post("/search", authmiddleware.verifyToken, Formcontroller.search);
+userRouter.post("/dailyData", authmiddleware.verifyToken, Formcontroller.dd);
+userRouter.post("/invoice", authmiddleware.verifyToken, Formcontroller.invoice);
 
-userRouter.get("/getSale", ReportControllers.getSaleData);
-userRouter.get("/bank", ReportControllers.get);
-userRouter.post("/dailyReport", ReportControllers.saveReport);
-userRouter.get("/getReport", ReportControllers.get);
-userRouter.put("/update", ReportControllers.update);
+userRouter.get(
+  "/getSale",
+  authmiddleware.verifyToken,
+  ReportControllers.getSaleData
+);
+userRouter.get("/bank", authmiddleware.verifyToken, ReportControllers.get);
+userRouter.post(
+  "/dailyReport",
+  authmiddleware.verifyToken,
+  ReportControllers.saveReport
+);
+userRouter.get("/getReport", authmiddleware.verifyToken, ReportControllers.get);
+userRouter.put("/update", authmiddleware.verifyToken, ReportControllers.update);
 module.exports = userRouter;

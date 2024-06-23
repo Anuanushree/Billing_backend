@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const config = require("../utilis/config");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const Inward = require("../model/Invade");
+const FormData = require("../model/FormData");
 const Secret = config.SECRET_CODE;
 
 const usercontroller = {
@@ -21,6 +23,30 @@ const usercontroller = {
       });
       await newUser.save();
 
+      const sharedData = await Inward.find({});
+      console.log(sharedData);
+      for (const d of sharedData) {
+        const newData = new FormData({
+          Range: d.Range,
+          Product: d.Product,
+          Description: d.Description,
+          Item_Code: d.Item_Code,
+          Case_Quantity: d.Case_Quantity,
+          MRP_Value: d.MRP_Value,
+          Size: d.Size,
+          Item_type: d.Item_type,
+          Receipt_bottle: d.Receipt_bottle,
+          Opening_bottle: d.Opening_bottle,
+          Quantity: d.Quantity,
+          Opening_value: d.Opening_value,
+          Receipt_value: d.Receipt_value,
+          Total_value: d.Total_value,
+          Total_bottle: d.Total_bottle,
+          user: newUser._id,
+        });
+
+        await newData.save();
+      }
       response.status(200).json({ message: "User added successfully" });
     } catch (error) {
       console.log("Error in signup", error);

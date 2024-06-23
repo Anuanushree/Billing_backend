@@ -38,7 +38,7 @@ const Formcontroller = {
       // let salesBottle = totalBottle - closingBottle;
       // let salesvalues = salesBottle * formData.MRP_Value;
 
-      const addData = new Inward({
+      const addData = new FormData({
         // Date: formData.date,
         Range: formData.Range,
         Product: formData.Product,

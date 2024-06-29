@@ -5,7 +5,7 @@ const SECRET = config.SECRET_CODE;
 const authmiddleware = {
     verifyToken: (request, response, next) => {
         const token = request.headers.authorization;
-        console.log("token:",token);
+        // console.log("token:",token);
         if (!token) {
             return response.json({ message: "authentication error token doesnot exixts" });
         }

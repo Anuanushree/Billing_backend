@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const config = require("./utilis/config");
 const app = require("./App");
+const cron = require("node-cron");
+const Formcontroller = require("./controllers/FormDataControllers");
 
 mongoose
   .connect(config.MONGO_URL)
@@ -13,3 +15,13 @@ mongoose
   .catch((error) => {
     console.error("Error in connecting mongodb ", error);
   });
+
+// Define the cron job to run at the end of the day
+cron.schedule("45 10 * * *", async () => {
+  try {
+    await Formcontroller.dd(req, res); // Make sure to pass req, res if needed
+    console.log("Scheduled task executed successfully");
+  } catch (error) {
+    console.error("Error executing scheduled task:", error);
+  }
+});

@@ -356,10 +356,9 @@ const Formcontroller = {
         message: "Daily data processed successfully for all users.",
       });
     } catch (error) {
-      response.status(500).json({
-        message: "Error processing daily data for users.",
-        error: error.message,
-      });
+      response
+        .status(201)
+        .json({ message: "Error processing daily data for users." });
       console.error("Error processing daily data for users:", error);
 
       // try {

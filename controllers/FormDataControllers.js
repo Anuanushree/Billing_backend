@@ -12,64 +12,140 @@ const Formcontroller = {
   Create: async (request, response) => {
     try {
       const { formData } = request.body;
-      const userId = request.userId;
-      const user = await User.findById(userId);
-      var Quantity = 0;
-      console.log(formData);
-      if (formData.Size == 650 || formData.Size == 750) {
-        Quantity = 12;
-      } else if (
-        formData.Size == 375 ||
-        formData.Size == 500 ||
-        formData.Size == 325
-      ) {
-        Quantity = 24;
-      } else if (formData.Size == 180) {
-        Quantity = 48;
-      } else if (formData.Size == 1000) {
-        Quantity = 9;
+
+      // Find all users
+      const users = await User.find();
+
+      // Loop through all users and create FormData for each
+      const formDataArray = [];
+      for (const user of users) {
+        var Quantity = 0;
+
+        // Calculate Quantity based on Size
+        if (formData.Size == 650 || formData.Size == 750) {
+          Quantity = 12;
+        } else if (
+          formData.Size == 375 ||
+          formData.Size == 500 ||
+          formData.Size == 325
+        ) {
+          Quantity = 24;
+        } else if (formData.Size == 180) {
+          Quantity = 48;
+        } else if (formData.Size == 1000) {
+          Quantity = 9;
+        }
+
+        // Calculate totalValue based on MRP_Value and bottle counts
+        const totalValue =
+          formData.MRP_Value * formData.Opening_bottle +
+          formData.MRP_Value * formData.Receipt_bottle;
+
+        // Create new FormData instance with user reference
+        const addData = new FormData({
+          Range: formData.Range,
+          Product: formData.Product,
+          Description: formData.Description,
+          Item_Code: formData.Item_Code,
+          Case_Quantity: formData.Case_Quantity,
+          MRP_Value: formData.MRP_Value,
+          Size: formData.Size,
+          Item_type: formData.Item_type,
+          Receipt_bottle: formData.Receipt_bottle,
+          Opening_bottle: formData.Opening_bottle,
+          Quantity: Quantity,
+          Opening_value: formData.MRP_Value * formData.Opening_bottle,
+          Receipt_value: formData.MRP_Value * formData.Receipt_bottle,
+          Total_value: totalValue,
+          Total_bottle: formData.Opening_bottle + formData.Receipt_bottle,
+          user: user.id, // Assign user reference here
+        });
+
+        // Save the new FormData instance
+        await addData.save();
+        // formDataArray.push(newdata); // Store the saved FormData in an array for response
       }
-      console.log(Quantity, "drtyui");
-      var totalValue =
-        formData.MRP_Value * formData.Opening_bottle +
-        formData.MRP_Value * formData.Receipt_bottle;
-      // let closingBottle = formData.Case * Quantity + formData.Loose;
-      // let totalBottle = formData.Opening_bottle + formData.Receipt_bottle;
-      // let salesBottle = totalBottle - closingBottle;
-      // let salesvalues = salesBottle * formData.MRP_Value;
 
-      const addData = new FormData({
-        // Date: formData.date,
-        Range: formData.Range,
-        Product: formData.Product,
-        Description: formData.Description,
-        Item_Code: formData.Item_Code,
-        Case_Quantity: formData.Case_Quantity,
-        MRP_Value: formData.MRP_Value,
-        Size: formData.Size,
-        Item_type: formData.Item_type,
-        Receipt_bottle: formData.Receipt_bottle,
-        Opening_bottle: formData.Opening_bottle,
-        Quantity: Quantity,
-        Opening_value: formData.MRP_Value * formData.Opening_bottle,
-        Receipt_value: formData.MRP_Value * formData.Receipt_bottle,
-        Total_value: totalValue,
-        Total_bottle: formData.Opening_bottle + formData.Receipt_bottle,
-        user: user._id,
-      });
-      console.log(addData);
-      const newdata = await addData.save();
-      user.data = user.data.concat(newdata._id);
-
-      await user.save();
-
-      response.status(200).json({ message: "data saved successfully" });
+      response.status(200).json({ message: "Data saved successfully" });
     } catch (error) {
-      console.log("error in save Form data :", error);
-      response.send(error);
+      console.error("Error saving form data:", error);
+      response.status(500).json({ error: "Internal server error" });
+    }
+    // try {
+    //   const { formData } = request.body;
+    //   const userId = request.userId;
+    //   const user = await User.findById(userId);
+    //   var Quantity = 0;
+    //   console.log(formData);
+    //   if (formData.Size == 650 || formData.Size == 750) {
+    //     Quantity = 12;
+    //   } else if (
+    //     formData.Size == 375 ||
+    //     formData.Size == 500 ||
+    //     formData.Size == 325
+    //   ) {
+    //     Quantity = 24;
+    //   } else if (formData.Size == 180) {
+    //     Quantity = 48;
+    //   } else if (formData.Size == 1000) {
+    //     Quantity = 9;
+    //   }
+    //   console.log(Quantity, "drtyui");
+    //   var totalValue =
+    //     formData.MRP_Value * formData.Opening_bottle +
+    //     formData.MRP_Value * formData.Receipt_bottle;
+
+    //   const addData = new FormData({
+    //     // Date: formData.date,
+    //     Range: formData.Range,
+    //     Product: formData.Product,
+    //     Description: formData.Description,
+    //     Item_Code: formData.Item_Code,
+    //     Case_Quantity: formData.Case_Quantity,
+    //     MRP_Value: formData.MRP_Value,
+    //     Size: formData.Size,
+    //     Item_type: formData.Item_type,
+    //     Receipt_bottle: formData.Receipt_bottle,
+    //     Opening_bottle: formData.Opening_bottle,
+    //     Quantity: Quantity,
+    //     Opening_value: formData.MRP_Value * formData.Opening_bottle,
+    //     Receipt_value: formData.MRP_Value * formData.Receipt_bottle,
+    //     Total_value: totalValue,
+    //     Total_bottle: formData.Opening_bottle + formData.Receipt_bottle,
+    //     user: user._id,
+    //   });
+    //   console.log(addData);
+    //   const newdata = await addData.save();
+    //   // user.data = user.data.concat(newdata._id);
+
+    //   // await user.save();
+
+    //   response.status(200).json({ message: "data saved successfully" });
+    // } catch (error) {
+    //   console.log("error in save Form data :", error);
+    //   response.send(error);
+    // }
+  },
+  getAllData: async (request, response) => {
+    try {
+      const userId = request.userId;
+      const data = await FormData.find({}, {});
+      response.send(data);
+    } catch (error) {
+      response.json({ message: "Error in getting list " });
+      console.log("Error in getting list :", error);
     }
   },
-
+  getAllDailyData: async (request, response) => {
+    try {
+      const userId = request.userId;
+      const data = await DailyData.find({}, {});
+      response.send(data);
+    } catch (error) {
+      response.json({ message: "Error in getting list " });
+      console.log("Error in getting list :", error);
+    }
+  },
   getdata: async (request, response) => {
     try {
       const userId = request.userId;
@@ -84,9 +160,6 @@ const Formcontroller = {
     try {
       const data = request.body;
       console.log(data.OpeningBottle);
-      // const Getdata = await Inward.findById(data.id);
-      // const formUpdate = await FormData.findOne({ Item_Code: data.itemCode });
-      // console.log(formUpdate);
       var totalValue =
         parseInt(data.editMRP) * parseInt(data.OpeningBottle) +
         parseInt(data.editMRP) * parseInt(data.ReceiptBottle);
@@ -222,7 +295,7 @@ const Formcontroller = {
     try {
       const Data = request.body;
       // console.log(Data.formDetails);
-      const Getdata = await FormData.findById(Data.id);
+      const Getdata = await FormData.find(Data.id);
       // console.log(Getdata);
       var cs = parseInt(Data.editedCaseValue) * parseInt(Getdata.Quantity);
 
@@ -246,26 +319,13 @@ const Formcontroller = {
         // Opening_bottle: openingbottle,
       });
       await searchId.save();
-      const userId = request.userId;
-      const res = await FormData.find({ user: userId });
-      response.send(res);
+      response.json({ message: "case updated successfully" });
     } catch (error) {
       response.json({ message: "Error in updating case backend " });
       console.log("Error in updating case backend :", error);
     }
   },
 
-  delete: async (request, response) => {
-    for (const d of formDetails) {
-      const existingData = await DailyData.findOne({
-        Date: {
-          $gte: new Date(dateString), // Greater than or equal to the start of the date
-          $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
-        },
-        Item_Code: d.Item_Code,
-      });
-    }
-  },
   dd: async (request, response) => {
     try {
       const allUsers = await User.find(); // Assuming User is your Mongoose model for users
@@ -356,98 +416,8 @@ const Formcontroller = {
         message: "Daily data processed successfully for all users.",
       });
     } catch (error) {
-      response
-        .status(201)
-        .json({ message: "Error processing daily data for users." });
+      response.json({ message: "Error processing daily data for users." });
       console.error("Error processing daily data for users:", error);
-
-      // try {
-      //   // const formDetails = request.body;
-      //   const userId = request.userId;
-      //   const data = await FormData.find({ user: userId });
-      //   const formDetails = data.filter((f) => f.Total_bottle > 0);
-      //   // console.log(formDetails);
-      //   const dateObject = new Date();
-
-      //   // Extracting date components
-      //   const year = dateObject.getFullYear();
-      //   const month = dateObject.getMonth() + 1;
-      //   const day = dateObject.getDate();
-      //   const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
-      //     .toString()
-      //     .padStart(2, "0")}`;
-
-      //   for (const d of formDetails) {
-      //     //     // If no existing entry found, create a new one
-      //     const newdata = new DailyData({
-      //       Range: d.Range,
-      //       Product: d.Product,
-      //       Description: d.Description,
-      //       Item_Code: d.Item_Code,
-      //       Size: d.Size,
-      //       MRP_Value: d.MRP_Value,
-      //       Opening_bottle: d.Opening_bottle,
-      //       Receipt_bottle: d.Receipt_bottle == null ? 0 : d.Receipt_bottle,
-      //       Case: d.Case == null ? 0 : d.Case,
-      //       Loose: d.Loose == null ? 0 : d.Loose,
-      //       Item_type: d.Item_type,
-      //       Quantity: d.Quantity,
-      //       Opening_value: d.Opening_value,
-      //       Receipt_value: d.Receipt_value == null ? 0 : d.Receipt_value,
-      //       Total_value: d.Total_value == null ? 0 : d.Total_value,
-      //       Total_bottle:
-      //         d.Total_bottle == null
-      //           ? d.Opening_bottle + d.Receipt_bottle
-      //           : d.Total_bottle,
-      //       Closing_bottle: d.Closing_bottle == null ? 0 : d.Closing_bottle,
-      //       Sales_bottle: d.Sales_bottle == null ? 0 : d.Sales_bottle,
-      //       Sale_value: d.Sale_value == null ? 0 : d.Sale_value,
-      //       Closing_value: d.Closing_value == null ? 0 : d.Closing_value,
-      //       updatedAt: Date.now(),
-      //       user: userId,
-      //     });
-      //     console.log("dfghyuiop");
-
-      //     await newdata.save();
-      //   }
-
-      //   formDetails.map(async (d) => {
-      //     // const find = await FormData.findById(d._id);
-
-      //     var totalValue =
-      //       d.Closing_bottle == null
-      //         ? d.MRP_Value * d.Total_bottle
-      //         : d.MRP_Value * d.Closing_bottle;
-
-      //     var newform = await FormData.findByIdAndUpdate(d._id, {
-      //       Opening_bottle:
-      //         d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
-      //       Opening_value:
-      //         d.Closing_bottle == null
-      //           ? d.MRP_Value * d.Total_bottle
-      //           : d.MRP_Value * d.Closing_bottle,
-      //       Receipt_value: null,
-      //       Total_value: totalValue,
-      //       updatedAt: Date.now(),
-      //       Total_bottle: null,
-      //       Receipt_bottle: null,
-      //       Closing_bottle: null,
-      //       Sales_bottle: null,
-      //       Sale_value: null,
-      //       Closing_value: null,
-      //       Case: null,
-      //       Loose: null,
-      //       Total_bottle:
-      //         d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
-      //     });
-      //     await newform.save();
-      //   });
-
-      //   response.json({ message: "daily data  successfully" });
-      // } catch (error) {
-      //   response.json({ message: "Error in daily data  backend " });
-      //   console.log("Error in daily data  backend :", error);
-      // }
     }
   },
 
@@ -534,6 +504,64 @@ const Formcontroller = {
         error: error.message,
       });
     }
+  },
+  deleteDuplicates: async () => {
+    try {
+      // Step 1: Find all documents in the DailyData collection
+      const allDailyData = await DailyData.find();
+
+      // Step 2: Delete all found documents
+      const deleteOperations = allDailyData.map(async (doc) => {
+        await DailyData.findByIdAndDelete(doc._id);
+      });
+
+      // Execute all delete operations
+      await Promise.all(deleteOperations);
+
+      console.log(
+        `Deleted ${allDailyData.length} documents from DailyData collection`
+      );
+    } catch (error) {
+      console.error("Error deleting all DailyData:", error);
+    }
+    // try {
+    //   // Step 1: Aggregate to identify duplicates
+    //   const duplicates = await DailyData.aggregate([
+    //     {
+    //       $group: {
+    //         _id: { user: "$user", Item_Code: "$Item_Code" },
+    //         ids: { $push: "$_id" }, // Collect all _id values for duplicates
+    //         count: { $sum: 1 }, // Count number of duplicates
+    //       },
+    //     },
+    //     {
+    //       $match: {
+    //         count: { $gt: 1 }, // Match only groups with more than one document (duplicates)
+    //       },
+    //     },
+    //   ]);
+
+    //   // Step 2: Delete duplicates
+    //   const deleteOperations = duplicates.map(async (duplicate) => {
+    //     // Keep the document with the oldest _id (you can change the sort order as per your requirement)
+    //     const toKeep = duplicate.ids.sort(
+    //       (a, b) => a.getTimestamp() - b.getTimestamp()
+    //     )[0];
+
+    //     // Delete all documents except the one to keep
+    //     const deleteIds = duplicate.ids.filter((id) => id !== toKeep);
+
+    //     // Perform the delete operation
+    //     await DailyData.deleteMany({ _id: { $in: deleteIds } });
+    //   });
+
+    //   // Execute all delete operations
+    //   await Promise.all(deleteOperations);
+
+    //   console.log("Duplicates deleted successfully.");
+    // } catch (error) {
+    //   console.error("Error deleting duplicates:", error);
+    // }
   },
 };
 module.exports = Formcontroller;

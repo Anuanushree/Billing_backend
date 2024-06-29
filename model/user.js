@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+  storeName: String,
   userLname: {
     type: String,
   },

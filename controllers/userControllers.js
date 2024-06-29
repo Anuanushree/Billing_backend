@@ -5,12 +5,17 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const Inward = require("../model/Invade");
 const FormData = require("../model/FormData");
+const DailyData = require("../model/dailydata");
+const DailyReport = require("../model/dailyReport");
+const InvoiceNum = require("../model/invoiceNum");
+const Sale = require("../model/sale");
+
 const Secret = config.SECRET_CODE;
 
 const usercontroller = {
   signup: async (request, response) => {
     try {
-      const { username, email, password } = request.body;
+      const { username, email, password ,storeName} = request.body;
       const chkuser = await User.findOne({ email });
       if (chkuser) {
         return response.json({ error: "mail id already exists" });
@@ -20,6 +25,7 @@ const usercontroller = {
         username,
         email,
         password: hashedpassword,
+        storeName
       });
       await newUser.save();
 
@@ -57,8 +63,8 @@ const usercontroller = {
     try {
       const { email, password } = request.body;
       const user = await User.findOne({ email });
-      const udt = await User.findByIdAndUpdate(user._id, { Able: "true" });
-      await udt.save();
+      // const udt = await User.findByIdAndUpdate(user._id, { Able: "true" });
+      await user.save();
 
       if (!user) {
         return response.json({ error: "email doesn't exists" });
@@ -123,9 +129,9 @@ const usercontroller = {
   },
   reset: async (request, response) => {
     try {
-      const { password, id } = request.body;
+      const { password, userId } = request.body;
 
-      const user = await User.findById(id);
+      const user = await User.findById(userId);
       console.log(user);
       if (!user) {
         return response.json({ error: "Error in reset, pls try again" });
@@ -138,6 +144,27 @@ const usercontroller = {
     } catch (error) {
       response.json({ error: "Error in reset password" });
       console.log("Error in reset password");
+    }
+  },
+  deleteUser: async (request, response) => {
+    try {
+      const userId = request.params.userId; // Extract userId from route parameters
+
+      const user = await User.findByIdAndDelete(userId); // Find and delete user
+
+      if (!user) {
+        return response.status(404).json({ error: "User not found" });
+      }
+      await FormData.deleteMany({ user: userId }); // Example: Delete FormData related to this user
+      await DailyReport.deleteMany({ user: userId });
+      await DailyData.deleteMany({ user: userId }); // Example: Delete FormData related to this user
+      await InvoiceNum.deleteMany({ user: userId });
+      // Example: Delete FormData related to this user
+      await Sale.deleteMany({ user: userId });
+      response.json({ message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Error in deleteUser:", error);
+      response.status(500).json({ error: "Error deleting user" });
     }
   },
   updateUser: async (request, response) => {

@@ -328,7 +328,7 @@ const Formcontroller = {
 
   dd: async (request, response) => {
     try {
-      const allUsers = await User.find(); // Assuming User is your Mongoose model for users
+      const allUsers = await User.find({}, {}); // Assuming User is your Mongoose model for users
 
       for (const user of allUsers) {
         const userId = user._id;
@@ -399,12 +399,12 @@ const Formcontroller = {
           await newform.save();
         }
       }
-
-      response.json({
-        message: "Daily data processed successfully for all users.",
-      });
+      console.log("daily data updated successfully");
+      // response.json({
+      //   message: "Daily data processed successfully for all users.",
+      // });
     } catch (error) {
-      response.json({ message: "Error processing daily data for users." });
+      // response.json({ message: "Error processing daily data for users." });
       console.error("Error processing daily data for users:", error);
     }
   },

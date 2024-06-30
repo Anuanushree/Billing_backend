@@ -4,25 +4,35 @@ const app = require("./App");
 const cron = require("node-cron");
 const Formcontroller = require("./controllers/FormDataControllers");
 
+// Connect to MongoDB with extended timeout
 mongoose
-  .connect(config.MONGO_URL)
+  .connect(config.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 30000, // Example: Increase timeout to 30 seconds
+  })
   .then(() => {
-    console.log("connected to Mongodb successfully");
+    console.log("Connected to MongoDB successfully");
+
+    // Start HTTP server
     app.listen(config.PORT, () => {
-      console.log("server connecting port", config.PORT);
+      console.log(`Server is running on port ${config.PORT}`);
+    });
+
+    // Define the cron job to run daily at 14:13 (2:13 PM)
+    cron.schedule("45 14 * * *", async () => {
+      try {
+        console.log("Time's up! Running scheduled task...");
+
+        // Execute the data processing task
+        await Formcontroller.dd({}, {});
+
+        console.log("Scheduled task executed successfully");
+      } catch (error) {
+        console.error("Error executing scheduled task:", error);
+      }
     });
   })
   .catch((error) => {
-    console.error("Error in connecting mongodb ", error);
+    console.error("Error connecting to MongoDB:", error);
   });
-
-// Define the cron job to run at the end of the day
-cron.schedule("13 14 * * *", async () => {
-  try {
-    console.log("times up");
-    await Formcontroller.dd({}, {}); // Make sure to pass req, res if needed
-    console.log("Scheduled task executed successfully");
-  } catch (error) {
-    console.error("Error executing scheduled task:", error);
-  }
-});

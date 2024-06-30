@@ -6,11 +6,7 @@ const Formcontroller = require("./controllers/FormDataControllers");
 
 // Connect to MongoDB with extended timeout
 mongoose
-  .connect(config.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 30000, // Example: Increase timeout to 30 seconds
-  })
+  .connect(config.MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB successfully");
 

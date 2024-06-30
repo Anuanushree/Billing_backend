@@ -392,6 +392,7 @@ const Formcontroller = {
             Closing_value: null,
             Case: null,
             Loose: null,
+            Date: Date.now(),
             Total_bottle:
               d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
           });

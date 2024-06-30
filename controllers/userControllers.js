@@ -15,7 +15,7 @@ const Secret = config.SECRET_CODE;
 const usercontroller = {
   signup: async (request, response) => {
     try {
-      const { username, email, password ,storeName} = request.body;
+      const { username, email, password, storeName } = request.body;
       const chkuser = await User.findOne({ email });
       if (chkuser) {
         return response.json({ error: "mail id already exists" });
@@ -25,7 +25,7 @@ const usercontroller = {
         username,
         email,
         password: hashedpassword,
-        storeName
+        storeName,
       });
       await newUser.save();
 

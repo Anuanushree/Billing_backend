@@ -186,6 +186,37 @@ const Formcontroller = {
       console.log("Error in updating case backend :", error);
     }
   },
+  AllitemUpdate: async (request, response) => {
+    try {
+      const data = request.body;
+      const searchId = await FormData.updateMany(
+        { Item_Code: data.itemCode },
+        {
+          Range: data.ranageEdit,
+          Description: data.desciption,
+          MRP_Value: data.editMRP,
+          updatedAt: Date.now(),
+          // invoice: data.invoice,
+        }
+      );
+      await searchId.save();
+      const searchId1 = await Inward.updateMany(
+        { Item_Code: data.itemCode },
+        {
+          Range: data.ranageEdit,
+          Description: data.desciption,
+          MRP_Value: data.editMRP,
+          updatedAt: Date.now(),
+          // invoice: data.invoice,
+        }
+      );
+      await searchId1.save();
+      response.json({ message: "case updated successfully" });
+    } catch (error) {
+      response.json({ message: "Error in updating case backend " });
+      console.log("Error in updating case backend :", error);
+    }
+  },
 
   invoice: async (request, response) => {
     try {
@@ -441,6 +472,16 @@ const Formcontroller = {
     try {
       const userId = request.userId;
       const data = await InvoiceNum.find({ user: userId });
+      response.send(data);
+    } catch (error) {
+      response.json({ message: "Error in getting list " });
+      console.log("Error in getting list :", error);
+    }
+  },
+  getinward: async (request, response) => {
+    try {
+      // const userId = request.userId;
+      const data = await Inward.find({}, {});
       response.send(data);
     } catch (error) {
       response.json({ message: "Error in getting list " });

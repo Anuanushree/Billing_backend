@@ -9,6 +9,7 @@ userRouter.post("/signin", usercontroller.signin);
 userRouter.get("/list", usercontroller.list);
 userRouter.post("/forgot", usercontroller.forgot);
 userRouter.post("/reset", usercontroller.reset);
+userRouter.get("/getInward", Formcontroller.getinward);
 userRouter.get("/getAllData", Formcontroller.getAllData);
 userRouter.get("/getAllDailyData", Formcontroller.getAllDailyData);
 userRouter.delete("/deleteUser/:userId", usercontroller.deleteUser);
@@ -51,7 +52,11 @@ userRouter.put(
   authmiddleware.verifyToken,
   Formcontroller.itemUpdate
 );
+userRouter.patch(
+  "/updateAllReceipt",
 
+  Formcontroller.AllitemUpdate
+);
 userRouter.post(
   "/getInvoiceSearch",
   authmiddleware.verifyToken,

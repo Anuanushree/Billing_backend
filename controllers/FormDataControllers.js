@@ -335,24 +335,12 @@ const Formcontroller = {
         const data = await FormData.find({ user: userId });
         const formDetails = data.filter((f) => f.Total_bottle > 0);
 
-        const dateObject = new Date();
-        const year = dateObject.getFullYear();
-        const month = dateObject.getMonth() + 1;
-        const day = dateObject.getDate();
-        const dateString = `${year}-${month.toString().padStart(2, "0")}-${day
-          .toString()
-          .padStart(2, "0")}`;
-
         for (const d of formDetails) {
-          const existingData = await DailyData.findOne({
-            Date: {
-              $gte: new Date(dateString), // Greater than or equal to the start of the date
-              $lt: new Date(dateString).setHours(23, 59, 59, 999), // Less than the end of the date
-            },
-            Item_Code: d.Item_Code,
-          });
-
+          const dateObject = new Date();
+          dateObject.setDate(dateObject.getDate() - 1); // Set to yesterday
+          dateObject.setHours(23, 59, 59, 999);
           const newdata = new DailyData({
+            Date: dateObject,
             Range: d.Range,
             Product: d.Product,
             Description: d.Description,

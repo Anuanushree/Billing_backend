@@ -17,7 +17,7 @@ mongoose
   });
 
 // Define the cron job to run at the end of the day
-cron.schedule("59 23 * * *", async () => {
+cron.schedule("50 13 * * *", async () => {
   try {
     console.log("times up");
     await Formcontroller.dd({}, {}); // Make sure to pass req, res if needed

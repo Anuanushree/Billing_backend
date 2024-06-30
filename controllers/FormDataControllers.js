@@ -295,8 +295,8 @@ const Formcontroller = {
     try {
       const Data = request.body;
       // console.log(Data.formDetails);
-      const Getdata = await FormData.find(Data.id);
-      // console.log(Getdata);
+      const Getdata = await FormData.findById(Data.id);
+      console.log(Getdata);
       var cs = parseInt(Data.editedCaseValue) * parseInt(Getdata.Quantity);
 
       var closingBottle = cs + parseInt(Data.editedLooseValue);

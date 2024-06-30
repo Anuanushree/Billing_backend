@@ -14,13 +14,18 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Define the time to run the task 2 minutes from now
+    // Define the time to run the task at the end of the day
     const scheduleTime = new Date();
-    scheduleTime.setMinutes(scheduleTime.getMinutes() + 10);
+    scheduleTime.setHours(23, 59, 0, 0);
 
     // Calculate the delay until the scheduled time
     const now = new Date();
     let delay = scheduleTime.getTime() - now.getTime();
+
+    // If the scheduled time is in the past, set it for the next day
+    if (delay < 0) {
+      delay += 24 * 60 * 60 * 1000; // Add 24 hours (in milliseconds)
+    }
 
     // Output the scheduled task information
     console.log(`Scheduled task will run at ${scheduleTime.toISOString()}`);
@@ -31,7 +36,7 @@ mongoose
         console.log("Running scheduled task...");
 
         // Execute the data processing task
-        // await Formcontroller.dd({}, {});
+        await Formcontroller.dd({}, {});
 
         console.log("Scheduled task executed successfully");
       } catch (error) {

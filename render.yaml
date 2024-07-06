@@ -1,0 +1,18 @@
+services:
+  - type: worker
+    name: my-worker
+    env: node
+    plan: standard
+    buildCommand: "npm install"
+    startCommand: "node index.js"
+    envVars:
+      - key: MONGO_URL
+        value: mongodb+srv://anushree:Nsaatf4VgEFY6VtY@cluster0.f6ma1cw.mongodb.net/billing-project?retryWrites=true&w=majority
+      - key: PORT
+        value: 4000
+      - key: SECRET_CODE
+        value: "capstone"
+      - key: EMAIL
+        value: anuabi2408@gmail.com
+      - key: PASSWORD
+        value: prqnxcsjuvzdnajt

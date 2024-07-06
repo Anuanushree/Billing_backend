@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const config = require("./utilis/config");
 const app = require("./App");
 const Formcontroller = require("./controllers/FormDataControllers");
-const cron = require("node-cron");
 
 // Function to run the scheduled task
 const runScheduledTask = async () => {
@@ -29,8 +28,20 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Schedule the task to run every day at 11:59 PM
-    cron.schedule("12 11 * * *", runScheduledTask);
+    // Calculate milliseconds until 9:30 AM tomorrow
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    tomorrow.setHours(23);
+    tomorrow.setMinutes(30);
+    tomorrow.setSeconds(0);
+    tomorrow.setMilliseconds(0);
+    const delay = tomorrow.getTime() - now.getTime();
+
+    // Schedule the task using setTimeout
+    setTimeout(runScheduledTask, delay);
+
+    console.log(`Scheduled task will run at ${tomorrow.toLocaleString()}`);
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

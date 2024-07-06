@@ -28,20 +28,25 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Calculate milliseconds until 9:30 AM tomorrow
+    // Calculate milliseconds until 11:59 PM today
     const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(now.getDate() + 1);
-    tomorrow.setHours(23);
-    tomorrow.setMinutes(30);
-    tomorrow.setSeconds(0);
-    tomorrow.setMilliseconds(0);
-    const delay = tomorrow.getTime() - now.getTime();
+    const endOfDay = new Date(now);
+    endOfDay.setHours(23);
+    endOfDay.setMinutes(31);
+    endOfDay.setSeconds(0);
+    endOfDay.setMilliseconds(0);
+    let delay = endOfDay.getTime() - now.getTime();
+
+    if (delay < 0) {
+      // If it's already past 11:59 PM today, calculate delay for tomorrow
+      endOfDay.setDate(endOfDay.getDate() + 1);
+      delay = endOfDay.getTime() - now.getTime();
+    }
 
     // Schedule the task using setTimeout
     setTimeout(runScheduledTask, delay);
 
-    console.log(`Scheduled task will run at ${tomorrow.toLocaleString()}`);
+    console.log(`Scheduled task will run at ${endOfDay.toLocaleString()}`);
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

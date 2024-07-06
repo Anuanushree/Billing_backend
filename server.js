@@ -33,7 +33,7 @@ mongoose
       const now = new Date();
       const endOfDay = new Date(now);
       endOfDay.setHours(23);
-      endOfDay.setMinutes(40);
+      endOfDay.setMinutes(45);
       endOfDay.setSeconds(0);
       endOfDay.setMilliseconds(0);
 

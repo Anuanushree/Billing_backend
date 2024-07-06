@@ -30,7 +30,7 @@ mongoose
     });
 
     // Schedule the task to run every day at 11:59 PM
-    cron.schedule("09 23 * * *", runScheduledTask);
+    cron.schedule("12 11 * * *", runScheduledTask);
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

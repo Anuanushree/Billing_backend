@@ -6,10 +6,7 @@ const Formcontroller = require("./controllers/FormDataControllers");
 
 // Connect to MongoDB with extended timeout and proper options
 mongoose
-  .connect(config.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(config.MONGO_URL)
   .then(() => {
     console.log("Connected to MongoDB successfully");
 
@@ -19,7 +16,7 @@ mongoose
     });
 
     // Define the cron job to run daily at 21:05 (9:05 PM)
-    cron.schedule("36 21 * * *", async () => {
+    cron.schedule("56 21 * * *", async () => {
       try {
         console.log("Time's up! Running scheduled task...");
         // Execute the data processing task

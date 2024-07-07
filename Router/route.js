@@ -20,7 +20,7 @@ userRouter.get(
   usercontroller.getprofile
 );
 
-userRouter.post("/create", authmiddleware.verifyToken, Formcontroller.Create);
+userRouter.post("/create", Formcontroller.Create);
 userRouter.get("/getData", authmiddleware.verifyToken, Formcontroller.getdata);
 userRouter.get(
   "/getdailyData",

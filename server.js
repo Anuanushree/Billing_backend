@@ -23,7 +23,7 @@ mongoose
       try {
         console.log("Time's up! Running scheduled task...");
         // Execute the data processing task
-        await Formcontroller.dd({}, {});
+        // await Formcontroller.dd({}, {});
         console.log("Scheduled task executed successfully");
       } catch (error) {
         console.error("Error executing scheduled task:", error);

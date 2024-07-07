@@ -9,7 +9,7 @@ const runScheduledTask = async () => {
     console.log("Running scheduled task...");
 
     // Execute the data processing task
-    await Formcontroller.dd({}, {}); // Ensure this function exists and is implemented correctly
+    // await Formcontroller.dd({}, {}); // Ensure this function exists and is implemented correctly
 
     console.log("Scheduled task executed successfully");
   } catch (error) {
@@ -35,7 +35,7 @@ mongoose
     const calculateDelayUntilEndOfDay = () => {
       const now = new Date();
       const endOfDay = new Date(now);
-      endOfDay.setHours(23, 45, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
+      endOfDay.setHours(20, 47, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
 
       let delay = endOfDay - now;
       if (delay < 0) {

@@ -19,10 +19,7 @@ const runScheduledTask = async () => {
 
 // Connect to MongoDB
 mongoose
-  .connect(config.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }) // Use updated connection options
+  .connect(config.MONGO_URL, {}) // Use updated connection options
   .then(() => {
     console.log("Connected to MongoDB successfully");
 

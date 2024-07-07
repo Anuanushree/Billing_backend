@@ -1,25 +1,15 @@
-const mongoose = require("mongoose"); // Uncommented mongoose import
+const mongoose = require("mongoose");
 const config = require("./utilis/config");
 const app = require("./App");
+const cron = require("node-cron");
 const Formcontroller = require("./controllers/FormDataControllers");
 
-// Function to run the scheduled task
-const runScheduledTask = async () => {
-  try {
-    console.log("Running scheduled task...");
-
-    // Execute the data processing task
-    // await Formcontroller.dd({}, {}); // Ensure this function exists and is implemented correctly
-
-    console.log("Scheduled task executed successfully");
-  } catch (error) {
-    console.error("Error executing scheduled task:", error);
-  }
-};
-
-// Connect to MongoDB
+// Connect to MongoDB with extended timeout and proper options
 mongoose
-  .connect(config.MONGO_URL, {}) // Use updated connection options
+  .connect(config.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("Connected to MongoDB successfully");
 
@@ -28,35 +18,19 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Function to calculate milliseconds until 11:45 PM today
-    const calculateDelayUntilEndOfDay = () => {
-      const now = new Date();
-      const endOfDay = new Date(now);
-      endOfDay.setHours(20, 52, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
-
-      let delay = endOfDay - now;
-      if (delay < 0) {
-        // If it's already past 11:45 PM today, calculate delay for tomorrow
-        endOfDay.setDate(endOfDay.getDate() + 1);
-        delay = endOfDay - now;
+    // Define the cron job to run daily at 21:05 (9:05 PM)
+    cron.schedule("05 21 * * *", async () => {
+      try {
+        console.log("Time's up! Running scheduled task...");
+        // Execute the data processing task
+        await Formcontroller.dd({}, {});
+        console.log("Scheduled task executed successfully");
+      } catch (error) {
+        console.error("Error executing scheduled task:", error);
       }
-      return delay;
-    };
+    });
 
-    // Schedule the task using setTimeout
-    const scheduleTask = () => {
-      const delay = calculateDelayUntilEndOfDay();
-      setTimeout(() => {
-        runScheduledTask().then(() => {
-          scheduleTask(); // Schedule the next execution after the current task is completed
-        });
-      }, delay);
-    };
-
-    // Start scheduling the task
-    scheduleTask();
-
-    console.log("Scheduled task will run daily at 11:45 PM");
+    console.log("Cron job scheduled to run daily at 21:05 (9:05 PM)");
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

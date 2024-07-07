@@ -32,7 +32,7 @@ mongoose
     const calculateDelayUntilEndOfDay = () => {
       const now = new Date();
       const endOfDay = new Date(now);
-      endOfDay.setHours(20, 47, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
+      endOfDay.setHours(20, 52, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
 
       let delay = endOfDay - now;
       if (delay < 0) {

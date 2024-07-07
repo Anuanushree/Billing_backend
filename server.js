@@ -19,7 +19,7 @@ mongoose
     });
 
     // Define the cron job to run daily at 21:05 (9:05 PM)
-    cron.schedule("05 21 * * *", async () => {
+    cron.schedule("36 21 * * *", async () => {
       try {
         console.log("Time's up! Running scheduled task...");
         // Execute the data processing task

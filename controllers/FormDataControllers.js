@@ -14,7 +14,7 @@ const Formcontroller = {
       const { formData } = request.body;
 
       // Find all users
-      const users = await User.find();
+      const users = await User.find({}, {});
 
       // Loop through all users and create FormData for each
       const formDataArray = [];

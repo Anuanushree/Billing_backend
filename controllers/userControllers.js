@@ -62,9 +62,10 @@ const usercontroller = {
   signin: async (request, response) => {
     try {
       const { email, password } = request.body;
+      console.log(email, password);
       const user = await User.findOne({ email });
       // const udt = await User.findByIdAndUpdate(user._id, { Able: "true" });
-      await user.save();
+      // await user.save();
 
       if (!user) {
         return response.json({ error: "email doesn't exists" });

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // Uncommented mongoose import
 const config = require("./utilis/config");
 const app = require("./App");
 const Formcontroller = require("./controllers/FormDataControllers");
@@ -9,7 +9,7 @@ const runScheduledTask = async () => {
     console.log("Running scheduled task...");
 
     // Execute the data processing task
-    // await Formcontroller.dd({}, {});
+    await Formcontroller.dd({}, {}); // Ensure this function exists and is implemented correctly
 
     console.log("Scheduled task executed successfully");
   } catch (error) {
@@ -19,7 +19,10 @@ const runScheduledTask = async () => {
 
 // Connect to MongoDB
 mongoose
-  .connect(config.MONGO_URL)
+  .connect(config.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }) // Use updated connection options
   .then(() => {
     console.log("Connected to MongoDB successfully");
 
@@ -28,20 +31,17 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Function to calculate milliseconds until 11:59 PM today
+    // Function to calculate milliseconds until 11:45 PM today
     const calculateDelayUntilEndOfDay = () => {
       const now = new Date();
       const endOfDay = new Date(now);
-      endOfDay.setHours(23);
-      endOfDay.setMinutes(45);
-      endOfDay.setSeconds(0);
-      endOfDay.setMilliseconds(0);
+      endOfDay.setHours(23, 45, 0, 0); // Combined setting hours, minutes, seconds, and milliseconds
 
-      let delay = endOfDay.getTime() - now.getTime();
+      let delay = endOfDay - now;
       if (delay < 0) {
-        // If it's already past 11:59 PM today, calculate delay for tomorrow
+        // If it's already past 11:45 PM today, calculate delay for tomorrow
         endOfDay.setDate(endOfDay.getDate() + 1);
-        delay = endOfDay.getTime() - now.getTime();
+        delay = endOfDay - now;
       }
       return delay;
     };
@@ -50,15 +50,16 @@ mongoose
     const scheduleTask = () => {
       const delay = calculateDelayUntilEndOfDay();
       setTimeout(() => {
-        runScheduledTask();
-        scheduleTask(); // Schedule the next execution
+        runScheduledTask().then(() => {
+          scheduleTask(); // Schedule the next execution after the current task is completed
+        });
       }, delay);
     };
 
     // Start scheduling the task
     scheduleTask();
 
-    console.log("Scheduled task will run daily at 11:59 PM");
+    console.log("Scheduled task will run daily at 11:45 PM");
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

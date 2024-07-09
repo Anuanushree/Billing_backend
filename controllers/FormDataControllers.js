@@ -368,8 +368,7 @@ const Formcontroller = {
 
         for (const d of formDetails) {
           const dateObject = new Date();
-          dateObject.setDate(dateObject.getDate() - 1); // Set to yesterday
-          dateObject.setHours(23, 59, 59, 999);
+
           const newdata = new DailyData({
             Date: dateObject,
             Range: d.Range,

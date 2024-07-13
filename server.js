@@ -11,7 +11,7 @@ const runScheduledTask = async () => {
     console.log("Running scheduled task...");
 
     // Execute the data processing task
-    // await Formcontroller.dd({}, {});
+    await Formcontroller.dd({}, {});
 
     console.log("Scheduled task executed successfully");
   } catch (error) {
@@ -35,7 +35,7 @@ mongoose
 
     // Schedule the task to run at 11:59 PM every day with a specific timezone
     cron.schedule(
-      "39 11 * * *",
+      "59 23 * * *",
       () => {
         console.log(
           "Scheduled task triggered at 11:59 PM in Asia/Kolkata timezone"

@@ -3,6 +3,7 @@ const config = require("./utilis/config");
 const app = require("./App");
 const Formcontroller = require("./controllers/FormDataControllers");
 const cron = require("node-cron");
+const moment = require("moment-timezone");
 
 // Function to run the scheduled task
 const runScheduledTask = async () => {
@@ -29,13 +30,27 @@ mongoose
       console.log(`Server is running on port ${config.PORT}`);
     });
 
-    // Schedule the task to run every minute (for testing purposes)
-    cron.schedule("* * * * *", () => {
-      console.log("Scheduled task triggered every minute");
-      runScheduledTask();
-    });
+    // Log the current server time
+    console.log("Current server time:", new Date().toString());
 
-    console.log("Scheduled task will run every minute for testing");
+    // Schedule the task to run at 11:59 PM every day with a specific timezone
+    cron.schedule(
+      "39 11 * * *",
+      () => {
+        console.log(
+          "Scheduled task triggered at 11:59 PM in Asia/Kolkata timezone"
+        );
+        runScheduledTask();
+      },
+      {
+        scheduled: true,
+        timezone: "Asia/Kolkata", // Set your desired timezone
+      }
+    );
+
+    console.log(
+      "Scheduled task will run daily at 11:59 PM in Asia/Kolkata timezone"
+    );
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);

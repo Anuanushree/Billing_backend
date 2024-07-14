@@ -81,7 +81,12 @@ const usercontroller = {
       };
       const token = jwt.sign(payload, Secret);
 
-      response.send({ token: token, id: user._id, username: user.username });
+      response.send({
+        token: token,
+        id: user._id,
+        username: user.username,
+        Admin: user.Admin,
+      });
     } catch (error) {
       response.json({ message: "Error in signin" });
       console.log("Error in signin ", error);
@@ -89,11 +94,12 @@ const usercontroller = {
   },
   list: async (request, response) => {
     try {
-      const user = await User.find({}, {});
-      response.send(user);
+      const users = await User.find({}, {});
+      response.send(users);
     } catch (error) {
-      response.json({ message: "Error in getting list " });
-      console.log("Error in getting list :", error);
+      response
+        .status(500)
+        .json({ message: "Error in getting user list", error: error.message });
     }
   },
   forgot: async (request, response) => {

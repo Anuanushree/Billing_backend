@@ -189,32 +189,35 @@ const Formcontroller = {
   AllitemUpdate: async (request, response) => {
     try {
       const data = request.body;
-      const searchId = await FormData.updateMany(
+
+      // Update FormData collection
+      await FormData.updateMany(
         { Item_Code: data.itemCode },
         {
-          Range: data.ranageEdit,
+          Range: data.rangeEdit,
           Description: data.desciption,
           MRP_Value: data.editMRP,
           updatedAt: Date.now(),
           // invoice: data.invoice,
         }
       );
-      await searchId.save();
-      const searchId1 = await Inward.updateMany(
+
+      // Update Inward collection
+      await Inward.updateMany(
         { Item_Code: data.itemCode },
         {
-          Range: data.ranageEdit,
+          Range: data.rangeEdit,
           Description: data.desciption,
           MRP_Value: data.editMRP,
           updatedAt: Date.now(),
           // invoice: data.invoice,
         }
       );
-      await searchId1.save();
-      response.json({ message: "case updated successfully" });
+
+      response.json({ message: "Case updated successfully" });
     } catch (error) {
-      response.json({ message: "Error in updating case backend " });
-      console.log("Error in updating case backend :", error);
+      response.json({ message: "Error in updating case backend" });
+      console.log("Error in updating case backend:", error);
     }
   },
 

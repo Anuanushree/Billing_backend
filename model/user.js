@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
   userLname: {
     type: String,
   },
+  Admin: {
+    type: Boolean,
+    default: false,
+  },
   address: String,
   phone: Number,
   gender: String,

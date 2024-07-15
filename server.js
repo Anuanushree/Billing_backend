@@ -19,6 +19,17 @@ const runScheduledTask = async () => {
   }
 };
 
+// Function to check and run the scheduled task at the correct time
+const checkAndRunScheduledTask = () => {
+  const currentTime = moment.tz("Asia/Kolkata");
+  if (currentTime.hours() === 16 && currentTime.minutes() === 19) {
+    console.log(
+      `Scheduled task triggered at ${currentTime.format()} in Asia/Kolkata timezone`
+    );
+    runScheduledTask();
+  }
+};
+
 // Connect to MongoDB
 mongoose
   .connect(config.MONGO_URL)
@@ -33,18 +44,16 @@ mongoose
     // Log the current server time
     console.log("Current server time:", new Date().toString());
 
-    // Schedule the task to run at 11:59 PM every day with a specific timezone
+    // Schedule the task to run every minute and check for the specific time
     cron.schedule(
       "* * * * *",
       () => {
-        console.log(
-          "Scheduled task triggered at 11:59 PM in Asia/Kolkata timezone"
-        );
-        runScheduledTask();
+        console.log("Cron job triggered, checking the time...");
+        setTimeout(checkAndRunScheduledTask, 0); // Check and run immediately
       },
       {
         scheduled: true,
-        timezone: "Asia/Kolkata", // Set your desired timezone
+        timezone: "Asia/Kolkata",
       }
     );
 

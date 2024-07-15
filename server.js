@@ -11,7 +11,7 @@ const runScheduledTask = async () => {
     console.log("Running scheduled task...");
 
     // Execute the data processing task
-    // await Formcontroller.dd({}, {});
+    await Formcontroller.dd({}, {});
 
     console.log("Scheduled task executed successfully");
   } catch (error) {
@@ -22,7 +22,7 @@ const runScheduledTask = async () => {
 // Function to check and run the scheduled task at the correct time
 const checkAndRunScheduledTask = () => {
   const currentTime = moment.tz("Asia/Kolkata");
-  if (currentTime.hours() === 16 && currentTime.minutes() === 19) {
+  if (currentTime.hours() === 23 && currentTime.minutes() === 59) {
     console.log(
       `Scheduled task triggered at ${currentTime.format()} in Asia/Kolkata timezone`
     );

@@ -11,7 +11,7 @@ const runScheduledTask = async () => {
     console.log("Running scheduled task...");
 
     // Execute the data processing task
-    await Formcontroller.dd({}, {});
+    // await Formcontroller.dd({}, {});
 
     console.log("Scheduled task executed successfully");
   } catch (error) {

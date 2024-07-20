@@ -359,8 +359,86 @@ const Formcontroller = {
       console.log("Error in updating case backend :", error);
     }
   },
-
   dd: async (request, response) => {
+    try {
+      const userId = request.userId;
+      const data = await FormData.find({ user: userId });
+      const formDetails = data.filter((f) => f.Total_bottle > 0);
+
+      for (const d of formDetails) {
+        const dateObject = new Date();
+
+        const newdata = new DailyData({
+          Date: dateObject,
+          Range: d.Range,
+          Product: d.Product,
+          Description: d.Description,
+          Item_Code: d.Item_Code,
+          Size: d.Size,
+          MRP_Value: d.MRP_Value,
+          Opening_bottle: d.Opening_bottle,
+          Receipt_bottle: d.Receipt_bottle || 0,
+          Case: d.Case || 0,
+          Loose: d.Loose || 0,
+          Item_type: d.Item_type,
+          Quantity: d.Quantity,
+          Opening_value: d.Opening_value,
+          Receipt_value: d.Receipt_value || 0,
+          Total_value: d.Total_value || 0,
+          Total_bottle: d.Total_bottle || d.Opening_bottle + d.Receipt_bottle,
+          Closing_bottle: d.Closing_bottle || 0,
+          Sales_bottle: d.Sales_bottle || 0,
+          Sale_value: d.Sale_value || 0,
+          Closing_value: d.Closing_value || 0,
+          updatedAt: Date.now(),
+          user: userId,
+        });
+
+        await newdata.save();
+      }
+
+      for (const d of formDetails) {
+        var totalValue =
+          d.Closing_bottle == null
+            ? d.MRP_Value * d.Total_bottle
+            : d.MRP_Value * d.Closing_bottle;
+
+        var newform = await FormData.findByIdAndUpdate(d._id, {
+          Opening_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+          Opening_value:
+            d.Closing_bottle == null
+              ? d.MRP_Value * d.Total_bottle
+              : d.MRP_Value * d.Closing_bottle,
+          Receipt_value: null,
+          Total_value: totalValue,
+          updatedAt: Date.now(),
+          Total_bottle: null,
+          Receipt_bottle: null,
+          Closing_bottle: null,
+          Sales_bottle: null,
+          Sale_value: null,
+          Closing_value: null,
+          Case: null,
+          Loose: null,
+          Date: Date.now(),
+          Total_bottle:
+            d.Closing_bottle == null ? d.Total_bottle : d.Closing_bottle,
+        });
+
+        await newform.save();
+      }
+
+      console.log("daily data updated successfully");
+      response.json({
+        message: "Daily data processed successfully for all users.",
+      });
+    } catch (error) {
+      response.json({ message: "Error processing daily data for users." });
+      console.error("Error processing daily data for users:", error);
+    }
+  },
+  dad: async (request, response) => {
     try {
       const allUsers = await User.find({}, {}); // Assuming User is your Mongoose model for users
 

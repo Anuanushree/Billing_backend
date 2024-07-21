@@ -74,7 +74,7 @@ userRouter.put(
   Formcontroller.updateData
 );
 userRouter.post("/search", authmiddleware.verifyToken, Formcontroller.search);
-userRouter.post("/dailyData", authmiddleware.verifyToken, Formcontroller.dd);
+userRouter.post("/billingUpdate",  Formcontroller.dd);
 userRouter.post("/invoice", authmiddleware.verifyToken, Formcontroller.invoice);
 
 userRouter.get(

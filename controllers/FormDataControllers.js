@@ -361,8 +361,11 @@ const Formcontroller = {
   },
   dd: async (request, response) => {
     try {
-      const userId = request.userId;
-      const data = await FormData.find({ user: userId });
+      // const userId = request.userId;
+      const { id } = request.body;
+      // console.log(userId);
+      console.log(id, "id");
+      const data = await FormData.find({ user: id });
       const formDetails = data.filter((f) => f.Total_bottle > 0);
 
       for (const d of formDetails) {
@@ -391,7 +394,7 @@ const Formcontroller = {
           Sale_value: d.Sale_value || 0,
           Closing_value: d.Closing_value || 0,
           updatedAt: Date.now(),
-          user: userId,
+          user: id,
         });
 
         await newdata.save();

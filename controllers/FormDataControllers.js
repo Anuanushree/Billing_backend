@@ -350,6 +350,7 @@ const Formcontroller = {
         Sale_value: salesvalues,
         Sales_bottle: salesBottle,
         Closing_value: ClosingValue,
+        updatedAt: date.now(),
         // Opening_bottle: openingbottle,
       });
       await searchId.save();
@@ -372,7 +373,7 @@ const Formcontroller = {
         const dateObject = new Date();
 
         const newdata = new DailyData({
-          Date: dateObject,
+      
           Range: d.Range,
           Product: d.Product,
           Description: d.Description,
@@ -393,7 +394,6 @@ const Formcontroller = {
           Sales_bottle: d.Sales_bottle || 0,
           Sale_value: d.Sale_value || 0,
           Closing_value: d.Closing_value || 0,
-          updatedAt: Date.now(),
           user: id,
         });
 
@@ -594,30 +594,40 @@ const Formcontroller = {
     }
   },
 
-  SearchByDateDailydata: async (req, res) => {
-    try {
-      const { dateSearch } = req.body;
-      const userId = request.userId;
-      // Assuming dateSearch contains fromDate and toDate
-      console.log(dateSearch);
-      // Search for daily data within the specified date range
-      const existingData = await DailyData.find({
-        Date: {
-          $gte: new Date(dateSearch.fromDate), // Greater than or equal to the start of the date
-          $lte: new Date(new Date(dateSearch.toDate).setHours(23, 59, 59, 999)), // Less than or equal to the end of the date
-        },
-        user: userId,
-      });
-      console.log(existingData);
-      res.json(existingData);
-    } catch (error) {
-      console.error("Error searching daily data by date range:", error);
-      res.status(500).json({
-        message: "Error in searching daily data by date range",
-        error: error.message,
-      });
-    }
-  },
+SearchByDateDailydata: async (req, res) => {
+  try {
+    const { dateSearch } = req.body;
+    const userId = req.userId;
+
+    // Ensure that fromDate and toDate are properly formatted
+    const fromDate = new Date(dateSearch.fromDate);
+    const toDate = new Date(dateSearch.toDate);
+    
+    // Set toDate to the end of the day
+    toDate.setHours(23, 59, 59, 999);
+
+    console.log('Searching for data between', fromDate, 'and', toDate);
+
+    // Search for daily data within the specified date range
+    const existingData = await DailyData.find({
+      Date: {
+        $gte: fromDate,
+        $lte: toDate,
+      },
+      user: userId,
+    });
+
+    console.log('Found data:', existingData);
+    res.json(existingData);
+  } catch (error) {
+    console.error('Error searching daily data by date range:', error);
+    res.status(500).json({
+      message: 'Error in searching daily data by date range',
+      error: error.message,
+    });
+  }
+},
+
   deleteDuplicates: async () => {
     try {
       // Step 1: Find all documents in the DailyData collection

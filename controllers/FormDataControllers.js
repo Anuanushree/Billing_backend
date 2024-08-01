@@ -350,7 +350,7 @@ const Formcontroller = {
         Sale_value: salesvalues,
         Sales_bottle: salesBottle,
         Closing_value: ClosingValue,
-        updatedAt: date.now(),
+        updatedAt: Date.now(),
         // Opening_bottle: openingbottle,
       });
       await searchId.save();

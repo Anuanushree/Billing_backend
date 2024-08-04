@@ -27,6 +27,7 @@ userRouter.get(
   authmiddleware.verifyToken,
   Formcontroller.getdailyData
 );
+userRouter.post("/preview", Formcontroller.preview);
 userRouter.post(
   "/getReportSearch",
   authmiddleware.verifyToken,
@@ -74,7 +75,7 @@ userRouter.put(
   Formcontroller.updateData
 );
 userRouter.post("/search", authmiddleware.verifyToken, Formcontroller.search);
-userRouter.post("/billingUpdate",  Formcontroller.dd);
+userRouter.post("/billingUpdate", Formcontroller.dd);
 userRouter.post("/invoice", authmiddleware.verifyToken, Formcontroller.invoice);
 
 userRouter.get(

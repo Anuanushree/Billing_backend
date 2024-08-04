@@ -7,6 +7,7 @@ const DailyData = require("../model/dailydata");
 const Sale = require("../model/sale");
 const { parse } = require("dotenv");
 const InvoiceNum = require("../model/invoiceNum");
+const FormBackUpData = require("../model/formBackUp");
 
 const Formcontroller = {
   Create: async (request, response) => {
@@ -328,7 +329,7 @@ const Formcontroller = {
   updateData: async (request, response) => {
     try {
       const Data = request.body;
-      // console.log(Data.formDetails);
+      console.log(Data, "data");
       const Getdata = await FormData.findById(Data.id);
       console.log(Getdata);
       var cs = parseInt(Data.editedCaseValue) * parseInt(Getdata.Quantity);
@@ -360,6 +361,39 @@ const Formcontroller = {
       console.log("Error in updating case backend :", error);
     }
   },
+  preview: async (request, response) => {
+    try {
+      const { id } = request.body;
+      console.log(id);
+
+      // Fetch current form data and backup data for the user
+      const currentData = await FormData.find({ user: id });
+      const backupData = await FormBackUpData.find({ user: id });
+
+      // Delete current form data for the user
+      await FormData.deleteMany({ user: id });
+
+      // Backup existing data to FormBackUpData collection
+      for (const data of backupData) {
+        const backup = new FormData({
+          _id: data._id,
+          ...data._doc,
+          user: id,
+        });
+
+        await backup.save();
+      }
+
+      // Return the data for previewing or further operations
+      response.json({
+        message: "Preview data processed successfully",
+        data: currentData,
+      });
+    } catch (error) {
+      console.log("Error in preview:", error);
+      response.status(500).json({ message: "Error processing preview" });
+    }
+  },
   dd: async (request, response) => {
     try {
       // const userId = request.userId;
@@ -372,8 +406,15 @@ const Formcontroller = {
       for (const d of formDetails) {
         const dateObject = new Date();
 
+        // const backup = new FormBackUpData({
+        //   _id: d._id,
+        //   ...d.toObject(),
+        //   user: id,
+        // });
+
+        // await backup.save();
+
         const newdata = new DailyData({
-      
           Range: d.Range,
           Product: d.Product,
           Description: d.Description,
@@ -594,39 +635,39 @@ const Formcontroller = {
     }
   },
 
-SearchByDateDailydata: async (req, res) => {
-  try {
-    const { dateSearch } = req.body;
-    const userId = req.userId;
+  SearchByDateDailydata: async (req, res) => {
+    try {
+      const { dateSearch } = req.body;
+      const userId = req.userId;
 
-    // Ensure that fromDate and toDate are properly formatted
-    const fromDate = new Date(dateSearch.fromDate);
-    const toDate = new Date(dateSearch.toDate);
-    
-    // Set toDate to the end of the day
-    toDate.setHours(23, 59, 59, 999);
+      // Ensure that fromDate and toDate are properly formatted
+      const fromDate = new Date(dateSearch.fromDate);
+      const toDate = new Date(dateSearch.toDate);
 
-    console.log('Searching for data between', fromDate, 'and', toDate);
+      // Set toDate to the end of the day
+      toDate.setHours(23, 59, 59, 999);
 
-    // Search for daily data within the specified date range
-    const existingData = await DailyData.find({
-      Date: {
-        $gte: fromDate,
-        $lte: toDate,
-      },
-      user: userId,
-    });
+      console.log("Searching for data between", fromDate, "and", toDate);
 
-    console.log('Found data:', existingData);
-    res.json(existingData);
-  } catch (error) {
-    console.error('Error searching daily data by date range:', error);
-    res.status(500).json({
-      message: 'Error in searching daily data by date range',
-      error: error.message,
-    });
-  }
-},
+      // Search for daily data within the specified date range
+      const existingData = await DailyData.find({
+        Date: {
+          $gte: fromDate,
+          $lte: toDate,
+        },
+        user: userId,
+      });
+
+      console.log("Found data:", existingData);
+      res.json(existingData);
+    } catch (error) {
+      console.error("Error searching daily data by date range:", error);
+      res.status(500).json({
+        message: "Error in searching daily data by date range",
+        error: error.message,
+      });
+    }
+  },
 
   deleteDuplicates: async () => {
     try {

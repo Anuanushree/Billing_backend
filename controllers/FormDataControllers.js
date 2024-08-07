@@ -668,7 +668,39 @@ const Formcontroller = {
       });
     }
   },
+  SearchByDateInvoice: async (req, res) => {
+    try {
+      const { dateSearch } = req.body;
+      const userId = req.userId;
 
+      // Ensure that fromDate and toDate are properly formatted
+      const fromDate = new Date(dateSearch.fromDate);
+      const toDate = new Date(dateSearch.toDate);
+
+      // Set toDate to the end of the day
+      toDate.setHours(23, 59, 59, 999);
+
+      console.log("Searching for data between", fromDate, "and", toDate);
+
+      // Search for daily data within the specified date range
+      const existingData = await InvoiceNum.find({
+        Date: {
+          $gte: fromDate,
+          $lte: toDate,
+        },
+        user: userId,
+      });
+
+      console.log("Found data:", existingData);
+      res.json(existingData);
+    } catch (error) {
+      console.error("Error searching daily data by date range:", error);
+      res.status(500).json({
+        message: "Error in searching daily data by date range",
+        error: error.message,
+      });
+    }
+  },
   deleteDuplicates: async () => {
     try {
       // Step 1: Find all documents in the DailyData collection

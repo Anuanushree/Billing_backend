@@ -62,36 +62,37 @@ const usercontroller = {
   signin: async (request, response) => {
     try {
       const { email, password } = request.body;
-      console.log(email, password);
-      const user = await User.findOne({ email });
-      // const udt = await User.findByIdAndUpdate(user._id, { Able: "true" });
-      // await user.save();
+      console.log("Sign-in request received for:", email);
 
+      const user = await User.findOne({ email });
       if (!user) {
-        return response.json({ error: "email doesn't exists" });
+        return response.status(404).json({ error: "Email doesn't exist" });
       }
+
       const chkpassword = await bcrypt.compare(password, user.password);
       if (!chkpassword) {
-        return response.json({ error: "invalid password" });
+        return response.status(401).json({ error: "Invalid password" });
       }
+
       const payload = {
         username: user.username,
         userId: user._id,
         mail: user.email,
       };
-      const token = jwt.sign(payload, Secret);
+      const token = jwt.sign(payload, Secret, { expiresIn: "1h" });
 
-      response.send({
+      response.status(200).send({
         token: token,
         id: user._id,
         username: user.username,
         Admin: user.Admin,
       });
     } catch (error) {
-      response.json({ message: "Error in signin" });
-      console.log("Error in signin ", error);
+      console.error("Error in signin:", error);
+      response.status(500).json({ message: "Error in signin" });
     }
   },
+
   list: async (request, response) => {
     try {
       const users = await User.find({}, {});

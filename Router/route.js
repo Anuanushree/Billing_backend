@@ -38,6 +38,12 @@ userRouter.post(
   authmiddleware.verifyToken,
   Formcontroller.SearchByDateDailydata
 );
+userRouter.post(
+  "/getinvoiceSearch",
+  authmiddleware.verifyToken,
+  Formcontroller.SearchByDateInvoice
+);
+
 userRouter.get(
   "/getItemMaster",
   authmiddleware.verifyToken,

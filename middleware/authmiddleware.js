@@ -3,13 +3,11 @@ const config = require("../utilis/config");
 const SECRET = config.SECRET_CODE;
 
 const authmiddleware = {
-  verifyToken: async (request, response, next) => {
+  verifyToken: (request, response, next) => {
     const token = request.headers.authorization;
-    // console.log("token:",token);
+    // console.log(token);
     if (!token) {
-      return response.json({
-        message: "authentication error token doesnot exixts",
-      });
+      return response.status(404).json({ error: "authentication error" });
     }
     try {
       const chktoken = jwt.verify(token, SECRET);
@@ -17,6 +15,7 @@ const authmiddleware = {
       next();
     } catch (error) {
       console.log("authentication error", error);
+      response.status(404).json({ error: "authentication error" });
     }
   },
 };

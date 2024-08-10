@@ -26,6 +26,9 @@ const formDataSchema = new mongoose.Schema({
   Sales_bottle: Number,
   Sale_value: Number,
   Closing_value: Number,
+  isSubmit: {
+    type: Boolean,
+  },
   updatedAt: {
     type: Date,
     default: Date.now(),

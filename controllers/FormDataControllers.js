@@ -352,6 +352,7 @@ const Formcontroller = {
         Sales_bottle: salesBottle,
         Closing_value: ClosingValue,
         updatedAt: Date.now(),
+        isSubmit: false,
         // Opening_bottle: openingbottle,
       });
       await searchId.save();
@@ -457,6 +458,7 @@ const Formcontroller = {
           Receipt_value: null,
           Total_value: totalValue,
           updatedAt: Date.now(),
+          isSubmit: True,
           Total_bottle: null,
           Receipt_bottle: null,
           Closing_bottle: null,

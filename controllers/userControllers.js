@@ -62,6 +62,7 @@ const usercontroller = {
   signin: async (request, response) => {
     try {
       const { email, password } = request.body;
+      
       console.log("Sign-in request received for:", email);
 
       const user = await User.findOne({ email });
@@ -79,7 +80,7 @@ const usercontroller = {
         userId: user._id,
         mail: user.email,
       };
-      const token = jwt.sign(payload, Secret, { expiresIn: "1h" });
+      const token = jwt.sign(payload, Secret);
 
       response.status(200).send({
         token: token,

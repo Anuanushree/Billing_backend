@@ -1,13 +1,15 @@
 const jwt = require("jsonwebtoken");
-const config = require("../utilis/config");
-const SECRET = config.SECRET_CODE;
+
+const SECRET = "innoview";
 
 const authmiddleware = {
-  verifyToken: (request, response, next) => {
+  verifyToken: async (request, response, next) => {
     const token = request.headers.authorization;
-    // console.log(token);
+    console.log("token:",token);
     if (!token) {
-      return response.status(404).json({ error: "authentication error" });
+      return response.json({
+        message: "authentication error token doesnot exixts",
+      });
     }
     try {
       const chktoken = jwt.verify(token, SECRET);
@@ -15,7 +17,6 @@ const authmiddleware = {
       next();
     } catch (error) {
       console.log("authentication error", error);
-      response.status(404).json({ error: "authentication error" });
     }
   },
 };

@@ -398,15 +398,15 @@ const Formcontroller = {
   dd: async (request, response) => {
     try {
       // const userId = request.userId;
+      const userId = request.userId;
       const { id } = request.body;
+      console.log(id, userId);
       // console.log(userId);
       console.log(id, "id");
       const data = await FormData.find({ user: id });
       const formDetails = data.filter((f) => f.Total_bottle > 0);
 
       for (const d of formDetails) {
-        const dateObject = new Date();
-
         // const backup = new FormBackUpData({
         //   _id: d._id,
         //   ...d.toObject(),
@@ -458,7 +458,7 @@ const Formcontroller = {
           Receipt_value: null,
           Total_value: totalValue,
           updatedAt: Date.now(),
-          isSubmit: True,
+          isSubmit: true,
           Total_bottle: null,
           Receipt_bottle: null,
           Closing_bottle: null,

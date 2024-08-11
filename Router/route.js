@@ -4,7 +4,6 @@ const Formcontroller = require("../controllers/FormDataControllers");
 const usercontroller = require("../controllers/userControllers");
 const authmiddleware = require("../middleware/authmiddleware");
 
-
 userRouter.post("/signup", usercontroller.signup);
 userRouter.post("/signin", usercontroller.signin);
 userRouter.get("/list", usercontroller.list);
@@ -82,7 +81,11 @@ userRouter.put(
   Formcontroller.updateData
 );
 userRouter.post("/search", authmiddleware.verifyToken, Formcontroller.search);
-userRouter.post("/billingUpdate", Formcontroller.dd);
+userRouter.post(
+  "/billingUpdate",
+  authmiddleware.verifyToken,
+  Formcontroller.dd
+);
 userRouter.post("/invoice", authmiddleware.verifyToken, Formcontroller.invoice);
 
 userRouter.get(

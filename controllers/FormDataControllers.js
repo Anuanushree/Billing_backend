@@ -418,6 +418,7 @@ const Formcontroller = {
         const newdata = new DailyData({
           Range: d.Range,
           Product: d.Product,
+          Date: Date.now(),
           Description: d.Description,
           Item_Code: d.Item_Code,
           Size: d.Size,

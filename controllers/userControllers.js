@@ -62,7 +62,7 @@ const usercontroller = {
   signin: async (request, response) => {
     try {
       const { email, password } = request.body;
-      
+
       console.log("Sign-in request received for:", email);
 
       const user = await User.findOne({ email });

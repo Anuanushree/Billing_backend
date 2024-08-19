@@ -87,6 +87,7 @@ const usercontroller = {
         id: user._id,
         username: user.username,
         Admin: user.Admin,
+        storeName: user.storeName,
       });
     } catch (error) {
       console.error("Error in signin:", error);
